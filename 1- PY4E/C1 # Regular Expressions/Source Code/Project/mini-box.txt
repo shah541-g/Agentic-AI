@@ -1,0 +1,239 @@
+From aaron@uct.ac.za Mon Jan  1 08:10:12 2008
+X-DSPAM-Confidence: 0.8123
+X-DSPAM-Probability: 0.0001
+
+From brian@media.berkeley.edu Mon Jan  1 09:14:55 2008
+X-DSPAM-Confidence: 0.6345
+X-DSPAM-Probability: 0.0002
+
+From chris@umich.edu Mon Jan  1 10:22:31 2008
+X-DSPAM-Confidence: 0.7011
+X-DSPAM-Probability: 0.0003
+
+From david@uct.ac.za Mon Jan  1 11:05:44 2008
+X-DSPAM-Confidence: 0.8992
+X-DSPAM-Probability: 0.0001
+
+From emma@media.berkeley.edu Mon Jan  1 12:18:09 2008
+X-DSPAM-Confidence: 0.5420
+X-DSPAM-Probability: 0.0004
+
+From farhan@umich.edu Mon Jan  1 13:44:33 2008
+X-DSPAM-Confidence: 0.7688
+X-DSPAM-Probability: 0.0002
+
+From gary@uct.ac.za Mon Jan  1 14:55:12 2008
+X-DSPAM-Confidence: 0.6139
+X-DSPAM-Probability: 0.0005
+
+From hannah@media.berkeley.edu Mon Jan  1 15:21:47 2008
+X-DSPAM-Confidence: 0.8451
+X-DSPAM-Probability: 0.0001
+
+From imran@umich.edu Mon Jan  1 16:10:05 2008
+X-DSPAM-Confidence: 0.7294
+X-DSPAM-Probability: 0.0003
+
+From john@uct.ac.za Mon Jan  1 17:02:18 2008
+X-DSPAM-Confidence: 0.9105
+X-DSPAM-Probability: 0.0001
+
+From kevin@media.berkeley.edu Mon Jan  1 18:33:27 2008
+X-DSPAM-Confidence: 0.5876
+X-DSPAM-Probability: 0.0002
+
+From laura@umich.edu Mon Jan  1 19:14:41 2008
+X-DSPAM-Confidence: 0.6602
+X-DSPAM-Probability: 0.0004
+
+From mohsin@uct.ac.za Mon Jan  1 20:05:55 2008
+X-DSPAM-Confidence: 0.8033
+X-DSPAM-Probability: 0.0002
+
+From nora@media.berkeley.edu Mon Jan  1 21:27:10 2008
+X-DSPAM-Confidence: 0.7198
+X-DSPAM-Probability: 0.0003
+
+From oscar@umich.edu Mon Jan  1 22:11:36 2008
+X-DSPAM-Confidence: 0.6122
+X-DSPAM-Probability: 0.0005
+
+From paul@uct.ac.za Mon Jan  2 08:10:12 2008
+X-DSPAM-Confidence: 0.8554
+X-DSPAM-Probability: 0.0001
+
+From qasim@media.berkeley.edu Mon Jan  2 09:14:55 2008
+X-DSPAM-Confidence: 0.6433
+X-DSPAM-Probability: 0.0002
+
+From rachel@umich.edu Mon Jan  2 10:22:31 2008
+X-DSPAM-Confidence: 0.7019
+X-DSPAM-Probability: 0.0003
+
+From saad@uct.ac.za Mon Jan  2 11:05:44 2008
+X-DSPAM-Confidence: 0.9180
+X-DSPAM-Probability: 0.0001
+
+From talha@media.berkeley.edu Mon Jan  2 12:18:09 2008
+X-DSPAM-Confidence: 0.5521
+X-DSPAM-Probability: 0.0004
+
+From usman@umich.edu Mon Jan  2 13:44:33 2008
+X-DSPAM-Confidence: 0.7788
+X-DSPAM-Probability: 0.0002
+
+From vahid@uct.ac.za Mon Jan  2 14:55:12 2008
+X-DSPAM-Confidence: 0.6901
+X-DSPAM-Probability: 0.0005
+
+From will@media.berkeley.edu Mon Jan  2 15:21:47 2008
+X-DSPAM-Confidence: 0.8459
+X-DSPAM-Probability: 0.0001
+
+From xavier@umich.edu Mon Jan  2 16:10:05 2008
+X-DSPAM-Confidence: 0.7302
+X-DSPAM-Probability: 0.0003
+
+From yasir@uct.ac.za Mon Jan  2 17:02:18 2008
+X-DSPAM-Confidence: 0.9015
+X-DSPAM-Probability: 0.0001
+
+From zain@media.berkeley.edu Mon Jan  2 18:33:27 2008
+X-DSPAM-Confidence: 0.5984
+X-DSPAM-Probability: 0.0002
+
+From ali@umich.edu Mon Jan  2 19:14:41 2008
+X-DSPAM-Confidence: 0.6609
+X-DSPAM-Probability: 0.0004
+
+From bilal@uct.ac.za Mon Jan  2 20:05:55 2008
+X-DSPAM-Confidence: 0.8039
+X-DSPAM-Probability: 0.0002
+
+From cody@media.berkeley.edu Mon Jan  2 21:27:10 2008
+X-DSPAM-Confidence: 0.7191
+X-DSPAM-Probability: 0.0003
+
+From dan@umich.edu Mon Jan  2 22:11:36 2008
+X-DSPAM-Confidence: 0.6129
+X-DSPAM-Probability: 0.0005
+
+From ehsan@uct.ac.za Tue Jan  3 08:10:12 2008
+X-DSPAM-Confidence: 0.8599
+X-DSPAM-Probability: 0.0001
+
+From faraz@media.berkeley.edu Tue Jan  3 09:14:55 2008
+X-DSPAM-Confidence: 0.6439
+X-DSPAM-Probability: 0.0002
+
+From ghalib@umich.edu Tue Jan  3 10:22:31 2008
+X-DSPAM-Confidence: 0.7025
+X-DSPAM-Probability: 0.0003
+
+From hamza@uct.ac.za Tue Jan  3 11:05:44 2008
+X-DSPAM-Confidence: 0.9192
+X-DSPAM-Probability: 0.0001
+
+From ibrahim@media.berkeley.edu Tue Jan  3 12:18:09 2008
+X-DSPAM-Confidence: 0.5529
+X-DSPAM-Probability: 0.0004
+
+From junaid@umich.edu Tue Jan  3 13:44:33 2008
+X-DSPAM-Confidence: 0.7791
+X-DSPAM-Probability: 0.0002
+
+From kamran@uct.ac.za Tue Jan  3 14:55:12 2008
+X-DSPAM-Confidence: 0.6910
+X-DSPAM-Probability: 0.0005
+
+From lara@media.berkeley.edu Tue Jan  3 15:21:47 2008
+X-DSPAM-Confidence: 0.8468
+X-DSPAM-Probability: 0.0001
+
+From murtaza@umich.edu Tue Jan  3 16:10:05 2008
+X-DSPAM-Confidence: 0.7310
+X-DSPAM-Probability: 0.0003
+
+From nadeem@uct.ac.za Tue Jan  3 17:02:18 2008
+X-DSPAM-Confidence: 0.9021
+X-DSPAM-Probability: 0.0001
+
+From omar@media.berkeley.edu Tue Jan  3 18:33:27 2008
+X-DSPAM-Confidence: 0.5991
+X-DSPAM-Probability: 0.0002
+
+From parvez@umich.edu Tue Jan  3 19:14:41 2008
+X-DSPAM-Confidence: 0.6617
+X-DSPAM-Probability: 0.0004
+
+From qadir@uct.ac.za Tue Jan  3 20:05:55 2008
+X-DSPAM-Confidence: 0.8046
+X-DSPAM-Probability: 0.0002
+
+From rizwan@media.berkeley.edu Tue Jan  3 21:27:10 2008
+X-DSPAM-Confidence: 0.7203
+X-DSPAM-Probability: 0.0003
+
+From shoaib@umich.edu Tue Jan  3 22:11:36 2008
+X-DSPAM-Confidence: 0.6135
+X-DSPAM-Probability: 0.0005
+
+From toba@uct.ac.za Wed Jan  4 08:10:12 2008
+X-DSPAM-Confidence: 0.8607
+X-DSPAM-Probability: 0.0001
+
+From umair@media.berkeley.edu Wed Jan  4 09:14:55 2008
+X-DSPAM-Confidence: 0.6446
+X-DSPAM-Probability: 0.0002
+
+From vicky@umich.edu Wed Jan  4 10:22:31 2008
+X-DSPAM-Confidence: 0.7031
+X-DSPAM-Probability: 0.0003
+
+From waseem@uct.ac.za Wed Jan  4 11:05:44 2008
+X-DSPAM-Confidence: 0.9204
+X-DSPAM-Probability: 0.0001
+
+From yusuf@media.berkeley.edu Wed Jan  4 12:18:09 2008
+X-DSPAM-Confidence: 0.5537
+X-DSPAM-Probability: 0.0004
+
+From zahid@umich.edu Wed Jan  4 13:44:33 2008
+X-DSPAM-Confidence: 0.7800
+X-DSPAM-Probability: 0.0002
+
+From ahmed@uct.ac.za Wed Jan  4 14:55:12 2008
+X-DSPAM-Confidence: 0.6922
+X-DSPAM-Probability: 0.0005
+
+From basit@media.berkeley.edu Wed Jan  4 15:21:47 2008
+X-DSPAM-Confidence: 0.8473
+X-DSPAM-Probability: 0.0001
+
+From cyrus@umich.edu Wed Jan  4 16:10:05 2008
+X-DSPAM-Confidence: 0.7322
+X-DSPAM-Probability: 0.0003
+
+From dawood@uct.ac.za Wed Jan  4 17:02:18 2008
+X-DSPAM-Confidence: 0.9030
+X-DSPAM-Probability: 0.0001
+
+From emad@media.berkeley.edu Wed Jan  4 18:33:27 2008
+X-DSPAM-Confidence: 0.6002
+X-DSPAM-Probability: 0.0002
+
+From faisal@umich.edu Wed Jan  4 19:14:41 2008
+X-DSPAM-Confidence: 0.6624
+X-DSPAM-Probability: 0.0004
+
+From ghani@uct.ac.za Wed Jan  4 20:05:55 2008
+X-DSPAM-Confidence: 0.8055
+X-DSPAM-Probability: 0.0002
+
+From hussain@media.berkeley.edu Wed Jan  4 21:27:10 2008
+X-DSPAM-Confidence: 0.7214
+X-DSPAM-Probability: 0.0003
+
+From irfan@umich.edu Wed Jan  4 22:11:36 2008
+X-DSPAM-Confidence: 0.6142
+X-DSPAM-Probability: 0.0005
