@@ -1,0 +1,809 @@
+
+===First Prompt===
+
+Create a snake game in C++ for me.
+
+===Output===
+
+#include <iostream>
+#include <vector>
+#include <deque>
+#include <cstdlib>
+#include <ctime>
+
+#ifdef _WIN32
+#include <windows.h>
+#include <conio.h>
+#else
+#include <unistd.h>
+#include <termios.h>
+#include <fcntl.h>
+#endif
+
+enum class Direction { STOP = 0, LEFT, RIGHT, UP, DOWN };
+
+struct Point {
+    int x, y;
+    bool operator==(const Point& other) const {
+        return x == other.x && y == other.y;
+    }
+};
+
+class IInputHandler {
+public:
+    virtual ~IInputHandler() = default;
+    virtual void handleInput(Direction& dir) = 0;
+};
+
+class ConsoleInputHandler : public IInputHandler {
+public:
+#ifdef _WIN32
+    void handleInput(Direction& dir) override {
+        if (_kbhit()) {
+            switch (_getch()) {
+                case 'a': if (dir != Direction::RIGHT) dir = Direction::LEFT; break;
+                case 'd': if (dir != Direction::LEFT) dir = Direction::RIGHT; break;
+                case 'w': if (dir != Direction::DOWN) dir = Direction::UP; break;
+                case 's': if (dir != Direction::UP) dir = Direction::DOWN; break;
+                case 'x': dir = Direction::STOP; break;
+            }
+        }
+    }
+#else
+    ConsoleInputHandler() {
+        termios term;
+        tcgetattr(STDIN_FILENO, &term);
+        term.c_lflag &= ~(ICANON | ECHO);
+        tcsetattr(STDIN_FILENO, TCSANOW, &term);
+        fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
+    }
+
+    void handleInput(Direction& dir) override {
+        char c;
+        if (read(STDIN_FILENO, &c, 1) > 0) {
+            switch (c) {
+                case 'a': if (dir != Direction::RIGHT) dir = Direction::LEFT; break;
+                case 'd': if (dir != Direction::LEFT) dir = Direction::RIGHT; break;
+                case 'w': if (dir != Direction::DOWN) dir = Direction::UP; break;
+                case 's': if (dir != Direction::UP) dir = Direction::DOWN; break;
+                case 'x': dir = Direction::STOP; break;
+            }
+        }
+    }
+#endif
+};
+
+class Snake {
+private:
+    std::deque<Point> body;
+    Direction currentDir;
+
+public:
+    Snake(int startX, int startY) {
+        body.push_back({startX, startY});
+        body.push_back({startX - 1, startY});
+        body.push_back({startX - 2, startY});
+        currentDir = Direction::RIGHT;
+    }
+
+    const Point& getHead() const {
+        return body.front();
+    }
+
+    const std::deque<Point>& getBody() const {
+        return body;
+    }
+
+    void setDirection(Direction dir) {
+        currentDir = dir;
+    }
+
+    Direction getDirection() const {
+        return currentDir;
+    }
+
+    void move(bool grow) {
+        Point newHead = getHead();
+        switch (currentDir) {
+            case Direction::LEFT:  newHead.x--; break;
+            case Direction::RIGHT: newHead.x++; break;
+            case Direction::UP:    newHead.y--; break;
+            case Direction::DOWN:  newHead.y++; break;
+            case Direction::STOP:  break;
+        }
+        body.push_front(newHead);
+        if (!grow) {
+            body.pop_back();
+        }
+    }
+
+    bool checkSelfCollision() const {
+        const Point& head = getHead();
+        for (size_t i = 1; i < body.size(); ++i) {
+            if (head == body[i]) return true;
+        }
+        return false;
+    }
+};
+
+class Food {
+private:
+    Point pos;
+    int width, height;
+
+public:
+    Food(int w, int h) : width(w), height(h) {
+        respawn();
+    }
+
+    void respawn() {
+        pos.x = rand() % (width - 2) + 1;
+        pos.y = rand() % (height - 2) + 1;
+    }
+
+    const Point& getPosition() const {
+        return pos;
+    }
+};
+
+class GameBoard {
+private:
+    int width, height;
+
+public:
+    GameBoard(int w, int h) : width(w), height(h) {}
+
+    int getWidth() const { return width; }
+    int getHeight() const { return height; }
+
+    bool isWallCollision(const Point& p) const {
+        return p.x <= 0 || p.x >= width - 1 || p.y <= 0 || p.y >= height - 1;
+    }
+};
+
+class GameController {
+private:
+    int width, height;
+    bool gameOver;
+    int score;
+    GameBoard board;
+    Snake snake;
+    Food food;
+    ConsoleInputHandler inputHandler;
+
+    void draw() {
+#ifdef _WIN32
+        system("cls");
+#else
+        std::cout << "\033[H\033[J";
+#endif
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
+                    std::cout << "#";
+                } else if (Point{x, y} == food.getPosition()) {
+                    std::cout << "F";
+                } else {
+                    bool isBodyPart = false;
+                    for (const auto& part : snake.getBody()) {
+                        if (part == Point{x, y}) {
+                            std::cout << (part == snake.getHead() ? "O" : "o");
+                            isBodyPart = true;
+                            break;
+                        }
+                    }
+                    if (!isBodyPart) {
+                        std::cout << " ";
+                    }
+                }
+            }
+            std::cout << "\n";
+        }
+        std::cout << "Score: " << score << "\n";
+        std::cout << "Controls: W (Up), A (Left), S (Down), D (Right), X (Quit)\n";
+    }
+
+    void update() {
+        Direction dir = snake.getDirection();
+        inputHandler.handleInput(dir);
+        snake.setDirection(dir);
+
+        if (dir == Direction::STOP) return;
+
+        bool growing = (snake.getHead() == food.getPosition());
+        if (growing) {
+            score += 10;
+            food.respawn();
+        }
+
+        snake.move(growing);
+
+        if (board.isWallCollision(snake.getHead()) || snake.checkSelfCollision()) {
+            gameOver = true;
+        }
+    }
+
+public:
+    GameController(int w, int h) 
+        : width(w), height(h), gameOver(false), score(0), 
+          board(w, h), snake(w / 2, h / 2), food(w, h) {}
+
+    void run() {
+        srand(static_cast<unsigned int>(time(nullptr)));
+        while (!gameOver) {
+            draw();
+            update();
+#ifdef _WIN32
+            Sleep(100);
+#else
+            usleep(100000);
+#endif
+        }
+        std::cout << "\nGame Over! Final Score: " << score << "\n";
+    }
+};
+
+int main() {
+    GameController game(40, 20);
+    game.run();
+    return 0;
+}
+
+===Second Prompt===
+
+Create a snake game in python for me. It should be GUI based using turtle
+
+
+===Output===
+
+import turtle
+import time
+import random
+
+# System Design & Constants
+WINDOW_WIDTH = 600
+WINDOW_HEIGHT = 600
+DELAY = 0.1
+GRID_SIZE = 20
+
+class GameModel:
+    def __init__(self):
+        self.snake = [[0, 0], [20, 0], [40, 0]]
+        self.direction = "stop"
+        self.food = [0, 0]
+        self.score = 0
+        self.high_score = 0
+        self.spawn_food()
+
+    def spawn_food(self):
+        x = random.randint(-WINDOW_WIDTH/2 + GRID_SIZE, WINDOW_WIDTH/2 - GRID_SIZE)
+        y = random.randint(-WINDOW_HEIGHT/2 + GRID_SIZE, WINDOW_HEIGHT/2 - GRID_SIZE)
+        # Align to grid
+        self.food = [x - (x % GRID_SIZE), y - (y % GRID_SIZE)]
+
+    def move_snake(self):
+        head = list(self.snake[-1])
+        if self.direction == 'up':
+            head[1] += GRID_SIZE
+        elif self.direction == 'down':
+            head[1] -= GRID_SIZE
+        elif self.direction == 'left':
+            head[0] -= GRID_SIZE
+        elif self.direction == 'right':
+            head[0] += GRID_SIZE
+
+        if self.direction != 'stop':
+            self.snake.append(head)
+            if not self.check_food_collision():
+                self.snake.pop(0)
+
+    def check_food_collision(self):
+        if self.snake[-1] == self.food:
+            self.score += 10
+            if self.score > self.high_score:
+                self.high_score = self.score
+            self.spawn_food()
+            return True
+        return False
+
+    def check_wall_collision(self):
+        head = self.snake[-1]
+        return (head[0] > WINDOW_WIDTH/2 - GRID_SIZE or 
+                head[0] < -WINDOW_WIDTH/2 or 
+                head[1] > WINDOW_HEIGHT/2 or 
+                head[1] < -WINDOW_HEIGHT/2 + GRID_SIZE)
+
+    def check_self_collision(self):
+        head = self.snake[-1]
+        for segment in self.snake[:-1]:
+            if segment == head:
+                return True
+        return False
+
+    def reset(self):
+        time.sleep(1)
+        self.snake = [[0, 0], [20, 0], [40, 0]]
+        self.direction = 'stop'
+        self.score = 0
+        self.spawn_food()
+
+
+class GameView:
+    def __init__(self):
+        self.screen = turtle.Screen()
+        self.screen.title('Ahmad's Python Snake Game')
+        self.screen.setup(width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
+        self.screen.bgcolor('black')
+        self.screen.tracer(0)
+
+        # Snake head/body turtle renderer pool
+        self.segments = []
+        
+        # Food turtle
+        self.food_turtle = turtle.Turtle()
+        self.food_turtle.speed(0)
+        self.food_turtle.shape('square')
+        self.food_turtle.color('red')
+        self.food_turtle.penup()
+
+        # Scoreboard turtle
+        self.score_turtle = turtle.Turtle()
+        self.score_turtle.speed(0)
+        self.score_turtle.color('white')
+        self.score_turtle.penup()
+        self.score_turtle.hideturtle()
+        self.score_turtle.goto(0, WINDOW_HEIGHT / 2 - 40)
+
+    def update_score(self, score, high_score):
+        self.score_turtle.clear()
+        self.score_turtle.write(f'Score: {score}  High Score: {high_score}', 
+                                align='center', font=('Courier', 24, 'normal'))
+
+    def render(self, model):
+        # Adjust segment count
+        while len(self.segments) < len(model.snake):
+            seg = turtle.Turtle()
+            seg.speed(0)
+            seg.shape('square')
+            seg.color('green')
+            seg.penup()
+            self.segments.append(seg)
+
+        for seg in self.segments[len(model.snake):]:
+            seg.goto(1000, 1000) # Hide extra segments offscreen
+
+        # Draw snake
+        for index, segment in enumerate(model.snake):
+            self.segments[index].goto(segment[0], segment[1])
+
+        # Draw food
+        self.food_turtle.goto(model.food[0], model.food[1])
+        
+        self.update_score(model.score, model.high_score)
+        self.screen.update()
+
+    def bind_keys(self, controller):
+        self.screen.listen()
+        self.screen.onkey(controller.go_up, 'Up')
+        self.screen.onkey(controller.go_down, 'Down')
+        self.screen.onkey(controller.go_left, 'Left')
+        self.screen.onkey(controller.go_right, 'Right')
+
+
+class GameController:
+    def __init__(self, model, view):
+        self.model = model
+        self.view = view
+        self.view.bind_keys(self)
+
+    def go_up(self):
+        if self.model.direction != 'down':
+            self.model.direction = 'up'
+
+    def go_down(self):
+        if self.model.direction != 'up':
+            self.model.direction = 'down'
+
+    def go_left(self):
+        if self.model.direction != 'right':
+            self.model.direction = 'left'
+
+    def go_right(self):
+        if self.model.direction != 'left':
+            self.model.direction = 'right'
+
+    def run(self):
+        while True:
+            self.view.screen.update()
+            
+            if self.model.check_wall_collision() or self.model.check_self_collision():
+                self.model.reset()
+
+            self.model.move_snake()
+            self.view.render(self.model)
+            
+            time.sleep(DELAY)
+
+if __name__ == '__main__':
+    game_model = GameModel()
+    game_view = GameView()
+    game_controller = GameController(game_model, game_view)
+    game_controller.run()
+
+
+
+===Third Prompt===
+
+
+This is the bug I am facing. 
+        
+        Traceback (most recent call last):
+  File 'D:\After-University\Consistency\1- Agentic AI\1- PY4E\C4 # OOP\Deliverable\snake.py', line 170, in <module>
+    game_model = GameModel()
+                 ^^^^^^^^^^^
+  File 'D:\After-University\Consistency\1- Agentic AI\1- PY4E\C4 # OOP\Deliverable\snake.py', line 18, in __init__
+    self.spawn_food()
+  File 'D:\After-University\Consistency\1- Agentic AI\1- PY4E\C4 # OOP\Deliverable\snake.py', line 21, in spawn_food
+    x = random.randint(-WINDOW_WIDTH/2 + GRID_SIZE, WINDOW_WIDTH/2 - GRID_SIZE)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 'C:\Users\hp\AppData\Local\Programs\Python\Python312\Lib\random.py', line 336, in randint
+    return self.randrange(a, b+1)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File 'C:\Users\hp\AppData\Local\Programs\Python\Python312\Lib\random.py', line 301, in randrange
+    istart = _index(start)
+             ^^^^^^^^^^^^^
+TypeError: 'float' object cannot be interpreted as an integer
+
+
+This is the code
+
+import turtle
+import time
+import random
+
+# System Design & Constants
+WINDOW_WIDTH = 600
+WINDOW_HEIGHT = 600
+DELAY = 0.1
+GRID_SIZE = 20
+
+class GameModel:
+    def __init__(self):
+        self.snake = [[0, 0], [20, 0], [40, 0]]
+        self.direction = "stop"
+        self.food = [0, 0]
+        self.score = 0
+        self.high_score = 0
+        self.spawn_food()
+
+    def spawn_food(self):
+        x = random.randint(-WINDOW_WIDTH/2 + GRID_SIZE, WINDOW_WIDTH/2 - GRID_SIZE)
+        y = random.randint(-WINDOW_HEIGHT/2 + GRID_SIZE, WINDOW_HEIGHT/2 - GRID_SIZE)
+        # Align to grid
+        self.food = [x - (x % GRID_SIZE), y - (y % GRID_SIZE)]
+
+    def move_snake(self):
+        head = list(self.snake[-1])
+        if self.direction == 'up':
+            head[1] += GRID_SIZE
+        elif self.direction == 'down':
+            head[1] -= GRID_SIZE
+        elif self.direction == 'left':
+            head[0] -= GRID_SIZE
+        elif self.direction == 'right':
+            head[0] += GRID_SIZE
+
+        if self.direction != 'stop':
+            self.snake.append(head)
+            if not self.check_food_collision():
+                self.snake.pop(0)
+
+    def check_food_collision(self):
+        if self.snake[-1] == self.food:
+            self.score += 10
+            if self.score > self.high_score:
+                self.high_score = self.score
+            self.spawn_food()
+            return True
+        return False
+
+    def check_wall_collision(self):
+        head = self.snake[-1]
+        return (head[0] > WINDOW_WIDTH/2 - GRID_SIZE or 
+                head[0] < -WINDOW_WIDTH/2 or 
+                head[1] > WINDOW_HEIGHT/2 or 
+                head[1] < -WINDOW_HEIGHT/2 + GRID_SIZE)
+
+    def check_self_collision(self):
+        head = self.snake[-1]
+        for segment in self.snake[:-1]:
+            if segment == head:
+                return True
+        return False
+
+    def reset(self):
+        time.sleep(1)
+        self.snake = [[0, 0], [20, 0], [40, 0]]
+        self.direction = 'stop'
+        self.score = 0
+        self.spawn_food()
+
+
+class GameView:
+    def __init__(self):
+        self.screen = turtle.Screen()
+        self.screen.title('Ahmad's Python Snake Game')
+        self.screen.setup(width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
+        self.screen.bgcolor('black')
+        self.screen.tracer(0)
+
+        # Snake head/body turtle renderer pool
+        self.segments = []
+        
+        # Food turtle
+        self.food_turtle = turtle.Turtle()
+        self.food_turtle.speed(0)
+        self.food_turtle.shape('square')
+        self.food_turtle.color('red')
+        self.food_turtle.penup()
+
+        # Scoreboard turtle
+        self.score_turtle = turtle.Turtle()
+        self.score_turtle.speed(0)
+        self.score_turtle.color('white')
+        self.score_turtle.penup()
+        self.score_turtle.hideturtle()
+        self.score_turtle.goto(0, WINDOW_HEIGHT / 2 - 40)
+
+    def update_score(self, score, high_score):
+        self.score_turtle.clear()
+        self.score_turtle.write(f'Score: {score}  High Score: {high_score}', 
+                                align='center', font=('Courier', 24, 'normal'))
+
+    def render(self, model):
+        # Adjust segment count
+        while len(self.segments) < len(model.snake):
+            seg = turtle.Turtle()
+            seg.speed(0)
+            seg.shape('square')
+            seg.color('green')
+            seg.penup()
+            self.segments.append(seg)
+
+        for seg in self.segments[len(model.snake):]:
+            seg.goto(1000, 1000) # Hide extra segments offscreen
+
+        # Draw snake
+        for index, segment in enumerate(model.snake):
+            self.segments[index].goto(segment[0], segment[1])
+
+        # Draw food
+        self.food_turtle.goto(model.food[0], model.food[1])
+        
+        self.update_score(model.score, model.high_score)
+        self.screen.update()
+
+    def bind_keys(self, controller):
+        self.screen.listen()
+        self.screen.onkey(controller.go_up, 'Up')
+        self.screen.onkey(controller.go_down, 'Down')
+        self.screen.onkey(controller.go_left, 'Left')
+        self.screen.onkey(controller.go_right, 'Right')
+
+
+class GameController:
+    def __init__(self, model, view):
+        self.model = model
+        self.view = view
+        self.view.bind_keys(self)
+
+    def go_up(self):
+        if self.model.direction != 'down':
+            self.model.direction = 'up'
+
+    def go_down(self):
+        if self.model.direction != 'up':
+            self.model.direction = 'down'
+
+    def go_left(self):
+        if self.model.direction != 'right':
+            self.model.direction = 'left'
+
+    def go_right(self):
+        if self.model.direction != 'left':
+            self.model.direction = 'right'
+
+    def run(self):
+        while True:
+            self.view.screen.update()
+            
+            if self.model.check_wall_collision() or self.model.check_self_collision():
+                self.model.reset()
+
+            self.model.move_snake()
+            self.view.render(self.model)
+            
+            time.sleep(DELAY)
+
+if __name__ == '__main__':
+    game_model = GameModel()
+    game_view = GameView()
+    game_controller = GameController(game_model, game_view)
+    game_controller.run()
+
+
+===Output===
+
+import turtle
+import time
+import random
+
+# System Design & Constants
+WINDOW_WIDTH = 600
+WINDOW_HEIGHT = 600
+DELAY = 0.1
+GRID_SIZE = 20
+
+class GameModel:
+    def __init__(self):
+        self.snake = [[0, 0], [20, 0], [40, 0]]
+        self.direction = "stop"
+        self.food = [0, 0]
+        self.score = 0
+        self.high_score = 0
+        self.spawn_food()
+
+    def spawn_food(self):
+        x = random.randint(int(-WINDOW_WIDTH/2 + GRID_SIZE), int(WINDOW_WIDTH/2 - GRID_SIZE))
+        y = random.randint(int(-WINDOW_HEIGHT/2 + GRID_SIZE), int(WINDOW_HEIGHT/2 - GRID_SIZE))
+        # Align to grid
+        self.food = [x - (x % GRID_SIZE), y - (y % GRID_SIZE)]
+
+    def move_snake(self):
+        head = list(self.snake[-1])
+        if self.direction == 'up':
+            head[1] += GRID_SIZE
+        elif self.direction == 'down':
+            head[1] -= GRID_SIZE
+        elif self.direction == 'left':
+            head[0] -= GRID_SIZE
+        elif self.direction == 'right':
+            head[0] += GRID_SIZE
+
+        if self.direction != 'stop':
+            self.snake.append(head)
+            if not self.check_food_collision():
+                self.snake.pop(0)
+
+    def check_food_collision(self):
+        if self.snake[-1] == self.food:
+            self.score += 10
+            if self.score > self.high_score:
+                self.high_score = self.score
+            self.spawn_food()
+            return True
+        return False
+
+    def check_wall_collision(self):
+        head = self.snake[-1]
+        return (head[0] > WINDOW_WIDTH/2 - GRID_SIZE or 
+                head[0] < -WINDOW_WIDTH/2 or 
+                head[1] > WINDOW_HEIGHT/2 or 
+                head[1] < -WINDOW_HEIGHT/2 + GRID_SIZE)
+
+    def check_self_collision(self):
+        head = self.snake[-1]
+        for segment in self.snake[:-1]:
+            if segment == head:
+                return True
+        return False
+
+    def reset(self):
+        time.sleep(1)
+        self.snake = [[0, 0], [20, 0], [40, 0]]
+        self.direction = 'stop'
+        self.score = 0
+        self.spawn_food()
+
+
+class GameView:
+    def __init__(self):
+        self.screen = turtle.Screen()
+        self.screen.title("Ahmad's Python Snake Game")
+        self.screen.setup(width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
+        self.screen.bgcolor('black')
+        self.screen.tracer(0)
+
+        # Snake head/body turtle renderer pool
+        self.segments = []
+        
+        # Food turtle
+        self.food_turtle = turtle.Turtle()
+        self.food_turtle.speed(0)
+        self.food_turtle.shape('square')
+        self.food_turtle.color('red')
+        self.food_turtle.penup()
+
+        # Scoreboard turtle
+        self.score_turtle = turtle.Turtle()
+        self.score_turtle.speed(0)
+        self.score_turtle.color('white')
+        self.score_turtle.penup()
+        self.score_turtle.hideturtle()
+        self.score_turtle.goto(0, WINDOW_HEIGHT / 2 - 40)
+
+    def update_score(self, score, high_score):
+        self.score_turtle.clear()
+        self.score_turtle.write(f'Score: {score}  High Score: {high_score}', 
+                                align='center', font=('Courier', 24, 'normal'))
+
+    def render(self, model):
+        # Adjust segment count
+        while len(self.segments) < len(model.snake):
+            seg = turtle.Turtle()
+            seg.speed(0)
+            seg.shape('square')
+            seg.color('green')
+            seg.penup()
+            self.segments.append(seg)
+
+        for seg in self.segments[len(model.snake):]:
+            seg.goto(1000, 1000) # Hide extra segments offscreen
+
+        # Draw snake
+        for index, segment in enumerate(model.snake):
+            self.segments[index].goto(segment[0], segment[1])
+
+        # Draw food
+        self.food_turtle.goto(model.food[0], model.food[1])
+        
+        self.update_score(model.score, model.high_score)
+        self.screen.update()
+
+    def bind_keys(self, controller):
+        self.screen.listen()
+        self.screen.onkey(controller.go_up, 'Up')
+        self.screen.onkey(controller.go_down, 'Down')
+        self.screen.onkey(controller.go_left, 'Left')
+        self.screen.onkey(controller.go_right, 'Right')
+
+
+class GameController:
+    def __init__(self, model, view):
+        self.model = model
+        self.view = view
+        self.view.bind_keys(self)
+
+    def go_up(self):
+        if self.model.direction != 'down':
+            self.model.direction = 'up'
+
+    def go_down(self):
+        if self.model.direction != 'up':
+            self.model.direction = 'down'
+
+    def go_left(self):
+        if self.model.direction != 'right':
+            self.model.direction = 'left'
+
+    def go_right(self):
+        if self.model.direction != 'left':
+            self.model.direction = 'right'
+
+    def run(self):
+        while True:
+            self.view.screen.update()
+            
+            if self.model.check_wall_collision() or self.model.check_self_collision():
+                self.model.reset()
+
+            self.model.move_snake()
+            self.view.render(self.model)
+            
+            time.sleep(DELAY)
+
+if __name__ == '__main__':
+    game_model = GameModel()
+    game_view = GameView()
+    game_controller = GameController(game_model, game_view)
+    game_controller.run()
