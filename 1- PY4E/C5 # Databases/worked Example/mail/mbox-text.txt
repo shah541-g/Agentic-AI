@@ -1,0 +1,60 @@
+From: alice@example.com
+To: bob@example.com
+Subject: Meeting tomorrow
+
+Hi Bob,
+Let's meet tomorrow at 10 AM.
+
+From: john@example.com
+To: alice@example.com
+Subject: Project update
+
+The project is progressing well.
+
+From: alice@example.com
+To: john@example.com
+Subject: Re: Project update
+
+Thanks for the update.
+
+From: sara@example.com
+To: alice@example.com
+Subject: Lunch
+
+Are you free for lunch today?
+
+From: john@example.com
+To: sara@example.com
+Subject: Re: Lunch
+
+Yes, I am free at 1 PM.
+
+From: alice@example.com
+To: bob@example.com
+Subject: Files
+
+I have attached the required files.
+
+From: john@example.com
+To: alice@example.com
+Subject: Final update
+
+Everything is completed.
+
+From: alice@example.com
+To: sara@example.com
+Subject: Thanks
+
+Thank you for your help.
+
+From: john@example.com
+To: bob@example.com
+Subject: Meeting notes
+
+Here are the notes from today's meeting.
+
+From: alice@example.com
+To: john@example.com
+Subject: Re: Meeting notes
+
+Received. Thanks!
