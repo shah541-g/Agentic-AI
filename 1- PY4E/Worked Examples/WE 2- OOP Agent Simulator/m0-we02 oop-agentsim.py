@@ -1,0 +1,592 @@
+import json
+import logging
+import os
+import re
+import uuid
+from abc import ABC, abstractmethod
+from collections import defaultdict
+from enum import Enum, auto
+from typing import Any, Optional, override
+
+from dotenv import load_dotenv
+from google import genai
+
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("google_genai").setLevel(logging.WARNING)
+
+load_dotenv()
+API_KEY = os.getenv("API_KEY")
+if not API_KEY:
+    raise RuntimeError("API_KEY is missing. Add it to your .env file.")
+
+MODEL_NAME = "gemini-3.5-flash-lite"
+client = genai.Client(api_key=API_KEY)
+
+
+def call_llm(system_instructions: str, prompt: str) -> str:
+    """Single place for all LLM calls."""
+    interaction = client.interactions.create(
+        model=MODEL_NAME,
+        input="<<SYSTEM INSTRUCTIONS>> \n" + system_instructions + "\n\n" + prompt,
+    )
+    return interaction.output_text
+
+
+def extract_json(text: str) -> Any:
+    """Parse JSON from an LLM reply, tolerating ```json fences and extra prose."""
+    text = text.strip()
+    text = re.sub(r"^```(?:json)?\s*|\s*```$", "", text, flags=re.IGNORECASE)
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+    # Fall back to the first {...} or [...] block in the text.
+    for open_ch, close_ch in (("[", "]"), ("{", "}")):
+        start, end = text.find(open_ch), text.rfind(close_ch)
+        if start != -1 and end > start:
+            try:
+                return json.loads(text[start:end + 1])
+            except json.JSONDecodeError:
+                continue
+    raise ValueError(f"Could not parse JSON from LLM output:\n{text}")
+
+
+class TaskStatus(Enum):
+    PENDING = auto()
+    IN_PROGRESS = auto()
+    COMPLETED = auto()
+    FAILED = auto()
+
+
+class AgentStatus(Enum):
+    IDLE = auto()
+    BUSY = auto()
+
+
+class AgentRole(Enum):
+    RESEARCHER = "researcher"
+    WRITER = "writer"
+    CODER = "coder"
+    VERIFIER = "verifier"
+    ORCHESTRATOR = "orchestrator"
+
+
+ROLE_INSTRUCTIONS = {
+    AgentRole.WRITER: (
+        "You are a professional Writer. Produce polished, well-structured written "
+        "content that fully completes the task. Output only the final content."
+    ),
+    AgentRole.RESEARCHER: (
+        "You are a careful Researcher. Investigate the topic, give accurate, "
+        "organized findings, and clearly say when you are unsure. "
+        "Output only the findings."
+    ),
+    AgentRole.CODER: (
+        "You are an expert Coder. Write complete, runnable, well-commented code "
+        "that fulfils the task. Output the code followed by a short usage note."
+    ),
+}
+
+
+class Task:
+    def __init__(
+        self,
+        task: str,
+        status: TaskStatus = TaskStatus.PENDING,
+        agent_id: Optional[str] = None,
+        task_id: Optional[str] = None,
+        input_from_tasks: Optional[list[str]] = None,
+        acceptance_criteria: Optional[list[str]] = None,
+        max_retries: int = 2,
+    ):
+        self.__task = task
+        self.__status = status
+        self.__assigned_to = agent_id
+        self.task_id = task_id or str(uuid.uuid4())
+        self.input_from_tasks = input_from_tasks or []
+        self.acceptance_criteria = acceptance_criteria or []
+        self.result: Any = None
+        self.verification_feedback = ""
+        self.retry_count = 0
+        self.max_retries = max_retries
+
+    @property
+    def status(self) -> TaskStatus:
+        return self.__status
+
+    @status.setter
+    def status(self, value: TaskStatus) -> None:
+        self.__status = value
+
+    @property
+    def task(self) -> str:
+        return self.__task
+
+    @task.setter
+    def task(self, value: str) -> None:
+        self.__task = value
+
+    @property
+    def assignTo(self) -> Optional[str]:
+        return self.__assigned_to
+
+    @assignTo.setter
+    def assignTo(self, value: Optional[str]) -> None:
+        self.__assigned_to = value
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "subtask": self.task,
+            "taskAssignedTo": self.assignTo,
+            "taskId": self.task_id,
+            "inputFromTasks": self.input_from_tasks,
+            "acceptanceCriteria": self.acceptance_criteria,
+        }
+
+
+class Agent(ABC):
+    def __init__(self, name: str, role: AgentRole):
+        self.name = name
+        self.role = role
+        self.agent_id = str(uuid.uuid4())
+        self.status = AgentStatus.IDLE
+        self.task: Optional[Task] = None
+        self.systemInstructions = ROLE_INSTRUCTIONS.get(role, "")
+
+    @abstractmethod
+    def execute(self, prompt: str) -> Any:
+        """Execute a prompt and return a result."""
+        raise NotImplementedError
+
+
+class TaskAgent(Agent):
+    def __init__(self, name: str, role: AgentRole):
+        super().__init__(name, role)
+        self.taskHistory: list[Task] = []
+        self.tasksCompleted = 0
+        self.tasksFailed = 0
+
+    @override
+    def execute(self, prompt: str) -> Any:
+        if self.status == AgentStatus.BUSY:
+            raise RuntimeError(f"{self.name} is already busy.")
+
+        task = self.task
+        if task is None:
+            task = Task(prompt, TaskStatus.PENDING, self.agent_id)
+
+        self.status = AgentStatus.BUSY
+        task.status = TaskStatus.IN_PROGRESS
+        if task not in self.taskHistory:
+            self.taskHistory.append(task)
+
+        try:
+            result = self.perform_task(prompt)
+            task.result = result
+            # Execution returned normally; this does not mean verification passed.
+            return result
+        except Exception:
+            task.status = TaskStatus.FAILED
+            self.tasksFailed += 1
+            raise
+        finally:
+            self.status = AgentStatus.IDLE
+            self.task = None
+
+    def perform_task(self, prompt: str) -> Any:
+        """Real LLM call using this agent's role instructions."""
+        output = call_llm(self.systemInstructions, prompt)
+        print(f"[{self.name} | {self.role.value}] done")
+        return {
+            "agent": self.name,
+            "role": self.role.value,
+            "output": output,
+        }
+
+
+class Coder(TaskAgent):
+    def __init__(self, name: str):
+        super().__init__(name, AgentRole.CODER)
+
+
+class Researcher(TaskAgent):
+    def __init__(self, name: str):
+        super().__init__(name, AgentRole.RESEARCHER)
+
+
+class Writer(TaskAgent):
+    def __init__(self, name: str):
+        super().__init__(name, AgentRole.WRITER)
+
+
+class VerifierAgent(Agent):
+    """LLM-based verifier: judges a task result against its acceptance criteria."""
+
+    def __init__(self, name: str = "Verifier"):
+        super().__init__(name, AgentRole.VERIFIER)
+        self.verificationHistory: list[dict[str, Any]] = []
+        self.systemInstructions = """
+You are a strict but fair Verifier. You receive a task, optional acceptance
+criteria, and a result. Decide whether the result genuinely completes the task
+and meets every criterion. Return valid JSON only, in this exact shape:
+{"passed": true or false, "feedback": "short, specific explanation"}
+"""
+
+    @override
+    def execute(self, prompt: str) -> bool:
+        """Agent interface; use verify_task() for real task records."""
+        return bool(prompt.strip())
+
+    def verify_task(self, task: Task, result: Any) -> bool:
+        self.status = AgentStatus.BUSY
+        try:
+            passed, feedback = self.verify_result(task, result)
+            task.verification_feedback = feedback
+            self.verificationHistory.append({
+                "task_id": task.task_id,
+                "passed": passed,
+                "feedback": feedback,
+            })
+            return passed
+        finally:
+            self.status = AgentStatus.IDLE
+
+    def verify_result(self, task: Task, result: Any) -> tuple[bool, str]:
+        if result is None:
+            return False, "No result was returned."
+
+        output = result["output"] if isinstance(result, dict) and "output" in result else result
+        if not str(output).strip():
+            return False, "The result is empty."
+
+        criteria = task.acceptance_criteria or [
+            "The result fully and correctly completes the task."
+        ]
+        prompt = (
+            f"TASK:\n{task.task}\n\n"
+            f"ACCEPTANCE CRITERIA:\n" + "\n".join(f"- {c}" for c in criteria) + "\n\n"
+            f"RESULT:\n{output}\n"
+        )
+
+        try:
+            verdict = extract_json(call_llm(self.systemInstructions, prompt))
+            passed = bool(verdict.get("passed", False))
+            feedback = str(verdict.get("feedback", "")) or "No feedback provided."
+            return passed, feedback
+        except Exception as exc:
+            # Fail closed: if we can't read the verdict, don't mark the task as passed.
+            return False, f"Verifier could not produce a valid verdict: {exc}"
+
+
+class Orchestrator(Agent):
+    def __init__(self, name: str = "Orchestrator"):
+        super().__init__(name, AgentRole.ORCHESTRATOR)
+
+        self.taskHistory: list[Task] = []
+        self.tasksAssigned = 0
+        self.tasksCompleted = 0
+        self.tasksFailed = 0
+        self.agentsToTasksMapping: dict[TaskAgent, list[Task]] = {}
+
+        self.verifier = VerifierAgent()
+        self.scaffoldAgents()
+
+        # Separate round-robin cursor for each role.
+        self._round_robin_index: dict[AgentRole, int] = defaultdict(int)
+
+        # In-memory result lookup for dependency injection.
+        self._results: dict[str, Any] = {}
+
+        self.max_retries = 2
+        self.systemInstructions = """
+You are an Orchestrator. Convert a user request into a dependency-aware task plan.
+Return valid JSON only: a list of objects, each with exactly these keys:
+- "subtask": string, a clear self-contained instruction for one agent
+- "taskAssignedTo": one of "writer", "researcher", "coder", or null if no role fits
+- "taskId": string like "T1", "T2", ... (unique)
+- "inputFromTasks": list of taskIds whose output this task needs (use [] if none)
+- "acceptanceCriteria": list of 1-3 short, checkable criteria for this subtask
+Split independent outcomes into separate tasks. Use dependencies only when a task
+genuinely needs another task's output. Do not add markdown or commentary.
+"""
+
+    def scaffoldAgents(self) -> None:
+        self.agentsToTasksMapping = {
+            Writer("Ahmad"): [],
+            Writer("Akram"): [],
+            Writer("Afzal"): [],
+            Researcher("Ali"): [],
+            Researcher("Muhammad"): [],
+            Researcher("Asad"): [],
+            Coder("Saqib"): [],
+            Coder("Bilal"): [],
+            Coder("Yasoob"): [],
+        }
+
+    def _agents_for_role(self, role: AgentRole) -> list[TaskAgent]:
+        return [
+            agent
+            for agent in self.agentsToTasksMapping
+            if agent.role == role and agent.status == AgentStatus.IDLE
+        ]
+
+    def _assign_agent(self, role: AgentRole) -> Optional[TaskAgent]:
+        eligible = self._agents_for_role(role)
+        if not eligible:
+            return None
+
+        index = self._round_robin_index[role] % len(eligible)
+        selected = eligible[index]
+        self._round_robin_index[role] += 1
+        return selected
+
+    def create_task_plan(self, prompt: str) -> list[Task]:
+        """LLM planner: turns the user request into a validated list of Tasks."""
+        prompt = prompt.strip()
+        if not prompt:
+            return []
+
+        raw = call_llm(self.systemInstructions, f"USER REQUEST:\n{prompt}")
+        plan = extract_json(raw)
+        if isinstance(plan, dict):  # tolerate {"tasks": [...]}
+            plan = plan.get("tasks", [plan])
+        if not isinstance(plan, list):
+            raise ValueError("Planner did not return a JSON list of tasks.")
+
+        valid_roles = {
+            "writer": AgentRole.WRITER,
+            "researcher": AgentRole.RESEARCHER,
+            "coder": AgentRole.CODER,
+        }
+
+        tasks: list[Task] = []
+        for index, item in enumerate(plan, start=1):
+            role_name = str(item.get("taskAssignedTo") or "").strip().lower()
+            role = valid_roles.get(role_name)
+            agent = self._assign_agent(role) if role else None
+
+            tasks.append(Task(
+                task=str(item.get("subtask", "")).strip(),
+                status=TaskStatus.PENDING,
+                agent_id=agent.agent_id if agent else None,
+                task_id=str(item.get("taskId") or f"T{index}"),
+                input_from_tasks=[str(d) for d in item.get("inputFromTasks", [])],
+                acceptance_criteria=[str(c) for c in item.get("acceptanceCriteria", [])],
+                max_retries=self.max_retries,
+            ))
+
+        return [t for t in tasks if t.task]
+
+    def plan_to_json(self, tasks: list[Task]) -> str:
+        return json.dumps([task.to_dict() for task in tasks], indent=2)
+
+    def execute(self, prompt: str) -> dict[str, Any]:
+        if self.status == AgentStatus.BUSY:
+            raise RuntimeError("Orchestrator is already processing a request.")
+
+        self.status = AgentStatus.BUSY
+        try:
+            tasks = self.create_task_plan(prompt)
+            self.taskHistory.extend(tasks)
+            self.tasksAssigned += sum(task.assignTo is not None for task in tasks)
+
+            agent_by_id = {
+                agent.agent_id: agent for agent in self.agentsToTasksMapping
+            }
+            for task in tasks:
+                agent = agent_by_id.get(task.assignTo) if task.assignTo else None
+                if agent is not None:
+                    self.agentsToTasksMapping[agent].append(task)
+
+            # Execute in dependency order. Repeated passes allow prerequisites first.
+            pending = {task.task_id: task for task in tasks}
+            while pending:
+                made_progress = False
+
+                for task_id, task in list(pending.items()):
+                    prerequisite_tasks = [
+                        next((c for c in tasks if c.task_id == dep), None)
+                        for dep in task.input_from_tasks
+                    ]
+
+                    if any(dep is None for dep in prerequisite_tasks):
+                        task.status = TaskStatus.FAILED
+                        task.verification_feedback = "Unknown dependency task ID."
+                        self.tasksFailed += 1
+                        del pending[task_id]
+                        made_progress = True
+                        continue
+
+                    if any(dep.status == TaskStatus.FAILED for dep in prerequisite_tasks):
+                        task.status = TaskStatus.FAILED
+                        task.verification_feedback = "A prerequisite task failed."
+                        self.tasksFailed += 1
+                        del pending[task_id]
+                        made_progress = True
+                        continue
+
+                    if any(dep.status != TaskStatus.COMPLETED for dep in prerequisite_tasks):
+                        continue
+
+                    if task.assignTo is None:
+                        task.status = TaskStatus.FAILED
+                        task.verification_feedback = "No eligible agent for this task."
+                        self.tasksFailed += 1
+                        del pending[task_id]
+                        made_progress = True
+                        continue
+
+                    agent = agent_by_id.get(task.assignTo)
+                    if agent is None:
+                        task.status = TaskStatus.FAILED
+                        task.verification_feedback = "Assigned agent ID was not found."
+                        self.tasksFailed += 1
+                        del pending[task_id]
+                        made_progress = True
+                        continue
+
+                    # Pass prerequisite outputs into the prompt.
+                    dependency_context = {
+                        dep.task_id: self._results[dep.task_id]
+                        for dep in prerequisite_tasks
+                        if dep.task_id in self._results
+                    }
+                    execution_prompt = task.task
+                    if dependency_context:
+                        execution_prompt += "\n\nPrerequisite outputs:\n" + json.dumps(
+                            dependency_context, default=str
+                        )
+
+                    task.assignTo = agent.agent_id
+                    agent.task = task
+
+                    try:
+                        result = agent.execute(execution_prompt)
+                        task.result = result
+                        passed = self.verifier.verify_task(task, result)
+
+                        if passed:
+                            task.status = TaskStatus.COMPLETED
+                            self.tasksCompleted += 1
+                            agent.tasksCompleted += 1
+                            self._results[task.task_id] = result
+                        else:
+                            self._retry_or_fail(task, agent, execution_prompt)
+                    except Exception as exc:
+                        task.result = None
+                        task.verification_feedback = f"Execution error: {exc}"
+                        self._retry_or_fail(task, agent, execution_prompt)
+
+                    del pending[task_id]
+                    made_progress = True
+
+                if not made_progress:
+                    for task in pending.values():
+                        task.status = TaskStatus.FAILED
+                        task.verification_feedback = (
+                            "Could not schedule task; check for circular or unresolved dependencies."
+                        )
+                        self.tasksFailed += 1
+                    pending.clear()
+
+            return {
+                "plan": [task.to_dict() for task in tasks],
+                "report": self.get_report(),
+                "results": {
+                    task.task_id: {
+                        "status": task.status.name,
+                        "assigned_to": task.assignTo,
+                        "result": task.result,
+                        "verification_feedback": task.verification_feedback,
+                    }
+                    for task in tasks
+                },
+            }
+        finally:
+            self.status = AgentStatus.IDLE
+            self.task = None
+
+    def _retry_or_fail(self, task: Task, agent: TaskAgent, base_prompt: str) -> None:
+        if task.retry_count < task.max_retries:
+            task.retry_count += 1
+            task.status = TaskStatus.PENDING
+
+            # Give the agent the verifier's feedback so the retry can actually improve.
+            retry_prompt = base_prompt
+            if task.verification_feedback:
+                retry_prompt += (
+                    "\n\nYour previous attempt was rejected. Feedback:\n"
+                    f"{task.verification_feedback}\nFix these issues."
+                )
+
+            try:
+                agent.task = task
+                result = agent.execute(retry_prompt)
+                task.result = result
+                passed = self.verifier.verify_task(task, result)
+                if passed:
+                    task.status = TaskStatus.COMPLETED
+                    self.tasksCompleted += 1
+                    agent.tasksCompleted += 1
+                    self._results[task.task_id] = result
+                    return
+                self._retry_or_fail(task, agent, base_prompt)
+                return
+            except Exception as exc:
+                task.verification_feedback = f"Retry execution error: {exc}"
+                self._retry_or_fail(task, agent, base_prompt)
+                return
+
+        task.status = TaskStatus.FAILED
+        self.tasksFailed += 1
+        agent.tasksFailed += 1
+
+    def get_report(self) -> dict[str, Any]:
+        agent_reports = []
+        for agent, tasks in self.agentsToTasksMapping.items():
+            agent_reports.append({
+                "name": agent.name,
+                "agent_id": agent.agent_id,
+                "role": agent.role.value,
+                "status": agent.status.name,
+                "assigned_tasks": len(tasks),
+                "completed_tasks": agent.tasksCompleted,
+                "failed_tasks": agent.tasksFailed,
+            })
+
+        return {
+            "tasks_assigned": self.tasksAssigned,
+            "tasks_completed": self.tasksCompleted,
+            "tasks_failed": self.tasksFailed,
+            "agents": agent_reports,
+        }
+
+def printSystemName():
+  print("""
+                           ▒▀▀▀▓                      ▒▀▀▀▓                      ▒▀▀▀▓                      
+                           ▓   █                      ▓   █                      ▓   █                      
+ ▄■▀▀▀■▄  ▄■▀▀▀■▄  ▄■▀▀▀▀▀▓█   ▀▀■▄  ▄■▀▀▀▀▀▓ ▄■▀▀▀▀▀▓█   ▀▀▀▀▓ ▄■▀▀▀■▄  ▄■▀▀▀■▄ █   ▀▀▀▀▓ ▄■▀▀▀■▄  ▄■▀▀▀■▄ 
+▐▌  ▓  ▐▌▐▌  ▓  ▐▌▐▌  ▓   ▓█   ▓  ▐▌▐▌  ▓   ▓▐▌  ▓   ▒█   ▓▀▀▀█▐▌  ▓  ▐▌▐▌  ▓  ▐▌█   ▓▀▀▀█▐▌  ▓  ▐▌▐▌  ▓  ▐▌
+█   █   ██   █▄▄▄██   █   ██   █   ██   █   ██   █ ▄▀▀█   █   ██   █▄▄▄██▄■▀▀   ██   █   ██   █   ██   █▄▄▄█
+█   ▓   ▓▓   ▓    ▓   ▓■▀▀ ▓   ▓   ▓▓   ▀ ▄▄▀▐▌  ▀▄▄  ▓   ▓   ▓▓   ▓    ▐▌  ▓   ▓▓   ▓   ▓█   ▓   ▓▓   ▓    
+▒   ▒   ▒▒   ▒    ▒   ▒    ▒   ▒   ▒▒   ■▀    ▀▄▄   ▀▄▒   ▒   ▒▒   ▒    ▒   ▒   ▒▒   ▒   ▒▒   ▒   ▒▒   ▒    
+░   ░   ░░   ░    ░   ░ ▄■▄░   ░   ░░   ░ ▄■▄▄▄▄▄█■  ▓░   ░   ░░   ░    ░   ░   ░░   ░   ░░   ░   ░░   ░    
+█   █   ██   █    █   █▀  ██   █   ██   █▀  █▓   ▒   ▒█   █   ██   █    █   █   ██   █   ██   █   ██   █    
+▐▌  ░  ▐▌░   █    ▐▌  ░   █░   █   ░▐▌  ░   █▒   ░   ■▐▌  ░  ▐▌░   █    ▐▌  ░  ▐▌▐▌  ░  ▐▌▐▌  ░  ▐▌░   █    
+ ▀■▄▄▄■▀ ▐▌  ░     ▀■▄▄▄▄▄█▒▄▄▄░▄▄▄▒ ▀■▄▄▄▄▄█░▄▄▄▄▄■▀  ▀■▄▄▄■▀ ▐▌  ░     ▀■▄▄▄■▀  ▀■▄▄▄■▀  ▀■▄▄▄■▀ ▐▌  ░    
+          ▀■▄▒                                                  ▀■▄▒                                ▀■▄▒    
+        """)
+
+if __name__ == "__main__":
+    printSystemName()
+    orchestrator = Orchestrator()
+    user_prompt = input("Task: ")
+
+    outcome = orchestrator.execute(user_prompt)
+
+    print("=== TASK PLAN ===")
+    print(json.dumps(outcome["plan"], indent=2))
+    print("\n=== EXECUTION RESULTS ===")
+    print(json.dumps(outcome["results"], indent=2, default=str))
+    print("\n=== REPORT ===")
+    print(json.dumps(outcome["report"], indent=2))
