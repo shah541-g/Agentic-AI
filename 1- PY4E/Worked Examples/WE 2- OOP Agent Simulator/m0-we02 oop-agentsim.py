@@ -6,6 +6,10 @@ import uuid
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from enum import Enum, auto
+import subprocess
+import sys
+import tempfile
+import textwrap
 from pathlib import Path
 from typing import Any, Optional, override
 
@@ -104,6 +108,77 @@ def _output_text(result: Any) -> str:
     if isinstance(result, dict) and "output" in result:
         return str(result["output"])
     return str(result)
+
+
+def extract_code_block(text: str) -> Optional[tuple[str, str]]:
+    """Return (language, code) for the first fenced code block, or None."""
+    match = re.search(r"```([\w+#-]*)[ \t]*\n(.*?)```", text, re.DOTALL)
+    if not match:
+        return None
+    return match.group(1).strip().lower(), match.group(2).rstrip() + "\n"
+
+
+# ---------------------------------------------------------------------------
+# Verifier tool: run generated code to catch runtime errors
+# ---------------------------------------------------------------------------
+
+CODE_RUN_TIMEOUT_SECONDS = 10
+MAX_TOOL_OUTPUT_CHARS = 2000
+
+
+def _clip(text: str) -> str:
+    text = text or ""
+    if len(text) <= MAX_TOOL_OUTPUT_CHARS:
+        return text
+    return text[:MAX_TOOL_OUTPUT_CHARS] + "\n...[truncated]"
+
+
+def run_code_tool(language: str, code: str) -> dict[str, Any]:
+    """Syntax-check, then execute generated code in a throwaway folder.
+
+    Only Python is supported. Returns a dict with:
+      ran (bool), ok (bool), stage ("skipped"|"syntax"|"runtime"|"timeout"|"ok"),
+      exit_code, stdout, stderr.
+
+    NOTE: this executes LLM-written code on your machine. It runs in a temp
+    directory with a timeout, no stdin, Python isolated mode and the API key
+    removed from its environment, but it is NOT a real sandbox.
+    """
+    if language not in ("python", "py"):
+        return {"ran": False, "ok": True, "stage": "skipped", "exit_code": None,
+                "stdout": "", "stderr": f"Execution not supported for '{language or 'unknown'}' code."}
+
+    # Stage 1: compile only (never executes the code).
+    try:
+        compile(code, "generated_code.py", "exec")
+    except SyntaxError as exc:
+        return {"ran": False, "ok": False, "stage": "syntax", "exit_code": None,
+                "stdout": "", "stderr": f"SyntaxError: {exc.msg} (line {exc.lineno})"}
+
+    # Stage 2: actually run it.
+    env = {k: v for k, v in os.environ.items() if k != "API_KEY"}
+    with tempfile.TemporaryDirectory(prefix="verifier_run_") as workdir:
+        script = Path(workdir) / "generated_code.py"
+        script.write_text(code, encoding="utf-8")
+        try:
+            proc = subprocess.run(
+                [sys.executable, "-I", str(script)],
+                cwd=workdir,
+                env=env,
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                timeout=CODE_RUN_TIMEOUT_SECONDS,
+            )
+        except subprocess.TimeoutExpired as exc:
+            return {"ran": True, "ok": True, "stage": "timeout", "exit_code": None,
+                    "stdout": _clip(exc.stdout.decode() if isinstance(exc.stdout, bytes) else (exc.stdout or "")),
+                    "stderr": f"Timed out after {CODE_RUN_TIMEOUT_SECONDS}s (may be a long-running program)."}
+
+    ok = proc.returncode == 0
+    return {"ran": True, "ok": ok, "stage": "ok" if ok else "runtime",
+            "exit_code": proc.returncode,
+            "stdout": _clip(proc.stdout), "stderr": _clip(proc.stderr)}
 
 
 class TaskStatus(Enum):
@@ -314,6 +389,26 @@ and meets every criterion. Return valid JSON only, in this exact shape:
         if not str(output).strip():
             return False, "The result is empty."
 
+        # Tool use: for coder results, actually run the code.
+        execution_report = ""
+        if isinstance(result, dict) and result.get("role") == AgentRole.CODER.value:
+            block = extract_code_block(str(output))
+            if block is None:
+                return False, "Coder result contains no fenced code block to run."
+            language, code = block
+            run = run_code_tool(language, code)
+            if run["stage"] in ("syntax", "runtime"):
+                # Hard failure: real error output goes back to the coder as feedback.
+                return False, (
+                    f"Code failed at {run['stage']} stage "
+                    f"(exit code {run['exit_code']}).\n{run['stderr']}"
+                )
+            execution_report = (
+                "\n\nEXECUTION REPORT (code was actually run):\n"
+                f"stage: {run['stage']}\nexit_code: {run['exit_code']}\n"
+                f"stdout:\n{run['stdout']}\nstderr:\n{run['stderr']}\n"
+            )
+
         criteria = task.acceptance_criteria or [
             "The result fully and correctly completes the task."
         ]
@@ -321,6 +416,7 @@ and meets every criterion. Return valid JSON only, in this exact shape:
             f"TASK:\n{task.task}\n\n"
             f"ACCEPTANCE CRITERIA:\n" + "\n".join(f"- {c}" for c in criteria) + "\n\n"
             f"RESULT:\n{output}\n"
+            + execution_report
         )
 
         try:
@@ -604,11 +700,11 @@ genuinely needs another task's output. Do not add markdown or commentary.
             write(f"{base}.md", header + text + "\n")
 
             if agent and agent.role == AgentRole.CODER:
-                match = re.search(r"```([\w+#-]*)[ \t]*\n(.*?)```", text, re.DOTALL)
-                if match:
-                    lang = match.group(1).strip().lower()
+                block = extract_code_block(text)
+                if block:
+                    lang, code = block
                     ext = CODE_EXTENSIONS.get(lang, ".txt")
-                    write(f"{base}{ext}", match.group(2).rstrip() + "\n")
+                    write(f"{base}{ext}", code)
 
         write("plan.json", self.plan_to_json(tasks))
         write("summary.json", json.dumps(
@@ -710,6 +806,121 @@ def ask_output_dir() -> Path:
             print(f"Invalid folder: {exc}")
 
 
+def render_table(
+    title: str,
+    headers: list[str],
+    rows: list[list[Any]],
+    max_col_width: int = 40,
+) -> str:
+    """Render rows as a boxed text table; long cells wrap onto extra lines."""
+    if not rows:
+        return f"{title}\n(no rows)\n"
+
+    cells = [[str(c) if c is not None else "-" for c in row] for row in rows]
+    widths = [
+        min(max_col_width, max(len(h), *(len(max(r[i].split("\n"), key=len)) for r in cells)))
+        for i, h in enumerate(headers)
+    ]
+
+    def wrap_row(row: list[str]) -> list[list[str]]:
+        wrapped = []
+        for text, width in zip(row, widths):
+            lines: list[str] = []
+            for part in text.split("\n"):
+                lines.extend(textwrap.wrap(part, width) or [""])
+            wrapped.append(lines)
+        height = max(len(c) for c in wrapped)
+        return [c + [""] * (height - len(c)) for c in wrapped]
+
+    def line(left: str, mid: str, right: str) -> str:
+        return left + mid.join("─" * (w + 2) for w in widths) + right
+
+    def format_row(row: list[str]) -> list[str]:
+        columns = wrap_row(row)
+        return [
+            "│ " + " │ ".join(col[i].ljust(w) for col, w in zip(columns, widths)) + " │"
+            for i in range(len(columns[0]))
+        ]
+
+    out = [title, line("┌", "┬", "┐")]
+    out += format_row(headers)
+    out.append(line("├", "┼", "┤"))
+    for index, row in enumerate(cells):
+        out += format_row(row)
+        if index < len(cells) - 1:
+            out.append(line("├", "┼", "┤"))
+    out.append(line("└", "┴", "┘"))
+    return "\n".join(out) + "\n"
+
+
+def print_outcome(orchestrator: Orchestrator, outcome: dict[str, Any], output_folder: Path) -> None:
+    """Print the run as tables instead of raw JSON."""
+    name_by_id = {a.agent_id: a.name for a in orchestrator.agentsToTasksMapping}
+    role_by_id = {a.agent_id: a.role.value for a in orchestrator.agentsToTasksMapping}
+
+    print()
+    print(render_table(
+        "TASK PLAN",
+        ["ID", "Role", "Agent", "Depends on", "Subtask", "Acceptance criteria"],
+        [
+            [
+                t["taskId"],
+                role_by_id.get(t["taskAssignedTo"], "-"),
+                name_by_id.get(t["taskAssignedTo"], "-"),
+                ", ".join(t["inputFromTasks"]) or "-",
+                t["subtask"],
+                "\n".join(f"• {c}" for c in t["acceptanceCriteria"]) or "-",
+            ]
+            for t in outcome["plan"]
+        ],
+        max_col_width=45,
+    ))
+
+    results_rows = []
+    for task_id, r in outcome["results"].items():
+        text = _output_text(r["result"]).strip() if r["result"] is not None else ""
+        preview = " ".join(text.split())
+        preview = (preview[:80] + "...") if len(preview) > 80 else (preview or "-")
+        results_rows.append([
+            task_id,
+            r["status"],
+            name_by_id.get(r["assigned_to"], "-"),
+            preview,
+            r["verification_feedback"] or "-",
+        ])
+    print(render_table(
+        "EXECUTION RESULTS",
+        ["ID", "Status", "Agent", "Output preview", "Verifier feedback"],
+        results_rows,
+        max_col_width=45,
+    ))
+
+    report = outcome["report"]
+    print(render_table(
+        "SUMMARY",
+        ["Assigned", "Completed", "Failed"],
+        [[report["tasks_assigned"], report["tasks_completed"], report["tasks_failed"]]],
+    ))
+
+    # Only agents that actually did something, to keep the table short.
+    print(render_table(
+        "AGENT ACTIVITY",
+        ["Agent", "Role", "Assigned", "Completed", "Failed"],
+        [
+            [a["name"], a["role"], a["assigned_tasks"], a["completed_tasks"], a["failed_tasks"]]
+            for a in report["agents"]
+            if a["assigned_tasks"] > 0
+        ],
+    ))
+
+    print(render_table(
+        f"SAVED FILES  ({output_folder})",
+        ["File"],
+        [[Path(p).name] for p in outcome.get("saved_files", [])],
+        max_col_width=80,
+    ))
+
+
 if __name__ == "__main__":
     printSystemName()
     orchestrator = Orchestrator()
@@ -717,13 +928,4 @@ if __name__ == "__main__":
     output_folder = ask_output_dir()
 
     outcome = orchestrator.execute(user_prompt, output_folder)
-
-    print("=== TASK PLAN ===")
-    print(json.dumps(outcome["plan"], indent=2))
-    print("\n=== EXECUTION RESULTS ===")
-    print(json.dumps(outcome["results"], indent=2, default=str))
-    print("\n=== REPORT ===")
-    print(json.dumps(outcome["report"], indent=2))
-    print(f"\n=== SAVED FILES ({output_folder}) ===")
-    for saved_path in outcome.get("saved_files", []):
-        print(saved_path)
+    print_outcome(orchestrator, outcome, output_folder)

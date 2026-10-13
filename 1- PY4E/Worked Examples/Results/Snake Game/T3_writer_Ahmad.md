@@ -1,118 +1,67 @@
-<!-- Task T3: Write comprehensive documentation and instructions on how to compile, build, and run the C++ Snake game on various operating systems. -->
+<!-- Task T3: Write comprehensive documentation and usage instructions for compiling and playing the C++ Snake game. -->
 
-# C++ Console Snake Game: Compilation, Build, and Execution Documentation
+# C++ Console Snake Game: Documentation & User Guide
 
-This document provides comprehensive instructions on how to set up, compile, build, and run the cross-platform C++ Console Snake game across major operating systems (Windows, Linux, and macOS).
+Welcome to the official documentation for the cross-platform, console-based C++ Snake game. This implementation is designed for high performance, smooth rendering without screen flickering, and seamless operation across Windows and Unix-like (Linux/macOS) environments.
 
 ---
 
-## 1. Prerequisites
+## 1. System Requirements & Prerequisites
 
-Before proceeding, ensure you have a modern C++ compiler installed that supports **C++11** or higher.
+To compile and run this game, you will need:
+* **C++ Compiler:** A modern compiler supporting **C++11** or higher (e.g., `g++`, `clang++`, or Microsoft Visual C++).
+* **Terminal Emulator:** A standard terminal window with a minimum size of **40 columns by 22 rows** to prevent layout wrapping and display distortions.
+* **Operating System:** Windows, Linux, or macOS.
 
-* **Windows:** MinGW-w64 (`g++`), Microsoft Visual Studio (MSVC), or Clang.
-* **Linux:** GNU Compiler Collection (`g++`) or Clang. Most distributions provide this via build tools packages (e.g., `build-essential`).
-* **macOS:** Apple Xcode Command Line Tools (`clang++`).
+---
 
-### Verifying Your Compiler
-Open your terminal or command prompt and run the following command to check your compiler version:
+## 2. Compilation Instructions
+
+Save the source code into a file named `snake_game.cpp`. Open your terminal or command prompt, navigate to the directory containing the file, and use the appropriate compilation command for your operating system:
+
+### Linux / macOS
 ```bash
-g++ --version
-# OR for macOS / Clang:
-clang++ --version
+g++ -std=c++11 snake_game.cpp -o snake_game
 ```
-Ensure the version supports C++11 or newer (GCC 4.8+ or Clang 3.3+).
+
+### Windows (using MinGW)
+```cmd
+g++ -std=c++11 snake_game.cpp -o snake_game.exe
+```
 
 ---
 
-## 2. Source Code Setup
+## 3. How to Play & Game Controls
 
-1. Create a new directory for your project:
-   ```bash
-   mkdir snake_game
-   cd snake_game
-   ```
-2. Create a source file named `snake.cpp` using your preferred text editor (e.g., VS Code, Vim, Notepad).
-3. Copy and paste the C++ source code into `snake.cpp` and save the file.
+Once compiled, execute the binary directly from your terminal:
 
----
+* **Linux / macOS:** `./snake_game`
+* **Windows:** `snake_game.exe`
 
-## 3. Compiling and Building by Operating System
+### Controls Guide
+* **Move Up:** `W` or `Up Arrow`
+* **Move Down:** `S` or `Down Arrow`
+* **Move Left:** `A` or `Left Arrow`
+* **Move Right:** `D` or `Right Arrow`
+* **Quit Game:** `Q`
 
-### Operating System: Windows
-
-Depending on whether you use MinGW or Microsoft Visual Studio, choose one of the following methods:
-
-#### Method A: Using MinGW (`g++`) via Command Prompt / PowerShell
-1. Open Command Prompt or PowerShell and navigate to your project directory.
-2. Compile the source file into an executable named `snake.exe`:
-   ```cmd
-   g++ -std=c++11 snake.cpp -o snake.exe
-   ```
-3. If compilation succeeds without errors, `snake.exe` will be generated in your folder.
-
-#### Method B: Using Microsoft Visual Studio (MSVC) via Developer Command Prompt
-1. Open the **Developer Command Prompt for VS** from your Windows start menu.
-2. Navigate to your project folder:
-   ```cmd
-   cd path\to\snake_game
-   ```
-3. Compile using the MSVC compiler (`cl`):
-   ```cmd
-   cl /EHsc snake.cpp /Fe:snake.exe
-   ```
+### Legend
+* `#` — Arena Boundaries
+* `O` — Snake Head
+* `o` — Snake Body
+* `*` — Food
 
 ---
 
-### Operating System: Linux (Ubuntu, Debian, Fedora, Arch, etc.)
+## 4. Technical Architecture Overview
 
-1. Open your terminal and ensure you have build essentials installed (Ubuntu/Debian example):
-   ```bash
-   sudo apt update
-   sudo apt install build-essential
-   ```
-2. Navigate to your project directory.
-3. Compile the code using `g++`:
-   ```bash
-   g++ -std=c++11 snake.cpp -o snake
-   ```
-4. This produces a binary executable file named `snake`.
+The codebase is engineered around clean Object-Oriented Programming (OOP) principles and platform abstraction:
 
----
-
-### Operating System: macOS
-
-1. Open your terminal. If you haven't installed Xcode Command Line Tools yet, install them by running:
-   ```bash
-   xcode-select --install
-   ```
-2. Navigate to your project directory.
-3. Compile the code using `clang++` (aliased or standard on macOS):
-   ```bash
-   clang++ -std=c++11 snake.cpp -o snake
-   ```
-   *(Note: You can also use `g++` if you have installed GCC via Homebrew).*
-
----
-
-## 4. Running the Game
-
-To ensure smooth gameplay and proper ANSI terminal rendering, run the game directly from an active terminal window.
-
-* **Windows:**
-  ```cmd
-  snake.exe
-  ```
-* **Linux / macOS:**
-  ```bash
-  ./snake
-  ```
-
----
-
-## 5. Game Controls & Instructions
-
-* **Navigation:** Use **W, A, S, D** or the **Arrow Keys** to steer the snake (`O` represents the head, `o` represents the body).
-* **Objective:** Collect the food (`*`) to grow longer and increase your score. Every 50 points, the game speed increases slightly.
-* **Game Over:** Crashing into the outer walls or into your own tail triggers the Game Over screen. You can choose to restart (`y/n`) or quit.
-* **Quit:** Press **Q** at any time during gameplay to exit immediately.
+1. **Platform Abstraction Layer (`InputManager`):** 
+   * Uses `#if defined(_WIN32)` directives to switch between Windows-specific console inputs (`<conio.h>`) and POSIX terminal configurations (`<termios.h>` and `fcntl`) for non-blocking raw keyboard input without requiring the user to press the Enter key.
+2. **Game Loop & Frame Pacing (`Game`):** 
+   * Implements a fixed-timestep loop paired with `std::this_thread::sleep_for` to maintain a stable game speed (~10 FPS / 100ms per frame).
+   * Utilizes ANSI escape codes (`\033[H`) to reposition the cursor to the top-left of the console each frame, completely eliminating screen flicker.
+3. **Collision & State Management (`Snake`, `Food`):**
+   * Dynamically tracks snake segments using `std::deque` for efficient head insertions and tail removals.
+   * Features robust boundary checks and self-intersection detection to trigger game-over states cleanly.

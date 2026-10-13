@@ -1,334 +1,458 @@
 #include <iostream>
 #include <vector>
 #include <deque>
-#include <cstdlib>
-#include <ctime>
 #include <chrono>
 #include <thread>
+#include <random>
+#include <string>
+#include <cstddef>
+#include <windows.h>
 
-// Platform-specific headers and input handling
 #if defined(_WIN32) || defined(_WIN64)
     #include <conio.h>
     #include <windows.h>
-    
-    // Clear screen for Windows without flashing using ANSI escape sequences
-    void clearScreen() {
-        std::cout << "\033[H";
-    }
-    
-    void setupConsole() {
-        // Enable ANSI escape sequences on Windows 10+
-        HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-        if (hOut != INVALID_HANDLE_VALUE) {
-            DWORD dwMode = 0;
-            if (GetConsoleMode(hOut, &dwMode)) {
-                dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-                SetConsoleMode(hOut, dwMode);
-            }
-        }
-    }
-
-    bool kbhit() {
-        return _kbhit() != 0;
-    }
-
-    int getchChar() {
-        return _getch();
-    }
-
+    #define PLATFORM_WINDOWS
 #else
-    #include <unistd.h>
     #include <termios.h>
+    #include <unistd.h>
     #include <fcntl.h>
-
-    void clearScreen() {
-        std::cout << "\033[H";
-    }
-
-    // Configure terminal for non-blocking raw input on Linux/macOS
-    void setupConsole() {
-        termios term;
-        tcgetattr(0, &term);
-        term.c_lflag &= ~ICANON; // Disable canonical mode (line buffering)
-        term.c_lflag &= ~ECHO;   // Disable character echo
-        tcsetattr(0, TCSANOW, &term);
-        fcntl(0, F_SETFL, O_NONBLOCK); // Set non-blocking read
-    }
-
-    bool kbhit() {
-        char ch;
-        int nread = read(0, &ch, 1);
-        if (nread > 0) {
-            // Push back or handle immediately? For simplicity in this loop, 
-            // we read directly in getchChar if kbhit returns true.
-            // A more robust buffer can be used, but standard single-char read works for simple games.
-            return true;
-        }
-        return false;
-    }
-
-    int getchChar() {
-        char ch = 0;
-        if (read(0, &ch, 1) < 0) {
-            return -1;
-        }
-        return ch;
-    }
+    #define PLATFORM_UNIX
 #endif
 
 // Game Constants
-const int WIDTH = 30;
-const int HEIGHT = 20;
+constexpr int WIDTH = 40;
+constexpr int HEIGHT = 20;
 
-// Direction Enum
-enum Direction { STOP = 0, UP, DOWN, LEFT, RIGHT };
+// Direction Enumeration
+enum class Direction {
+    UP, DOWN, LEFT, RIGHT
+};
 
+// 2D Point
 struct Point {
     int x, y;
+
     bool operator==(const Point& other) const {
         return x == other.x && y == other.y;
     }
 };
 
-class SnakeGame {
+// Input Manager
+class InputManager {
+#ifdef PLATFORM_UNIX
 private:
-    bool gameOver;
-    int score;
-    int highScore;
-    Direction dir;
-    Point food;
-    std::deque<Point> snake;
-    int speedMs;
-
-    void spawnFood() {
-        bool collision;
-        do {
-            collision = false;
-            food.x = std::rand() % WIDTH;
-            food.y = std::rand() % HEIGHT;
-            
-            // Ensure food doesn't spawn on the snake
-            for (const auto& segment : snake) {
-                if (segment == food) {
-                    collision = true;
-                    break;
-                }
-            }
-        } while (collision);
-    }
+    static inline termios originalTerminal{};
+    static inline int originalFlags = -1;
+    static inline bool terminalConfigured = false;
+#endif
 
 public:
-    SnakeGame() {
-        std::srand(static_cast<unsigned int>(std::time(nullptr)));
-        highScore = 0;
-        resetGame();
-    }
-
-    void resetGame() {
-        gameOver = false;
-        score = 0;
-        dir = STOP;
-        speedMs = 120; // Game tick delay in milliseconds
-
-        // Initialize snake in the middle
-        snake.clear();
-        int startX = WIDTH / 2;
-        int startY = HEIGHT / 2;
-        snake.push_back({startX, startY});
-        snake.push_back({startX - 1, startY});
-        snake.push_back({startX - 2, startY});
-
-        spawnFood();
-    }
-
-    void processInput() {
-        if (kbhit()) {
-            int ch = getchChar();
-            
-            // Handle arrow keys or WASD
-            if (ch == 227 || ch == 0 || ch == 224) { 
-                // Windows arrow key prefix handling
-                ch = getchChar();
-                switch (ch) {
-                    case 72: if (dir != DOWN)  dir = UP;    break; // Up arrow
-                    case 80: if (dir != UP)    dir = DOWN;  break; // Down arrow
-                    case 75: if (dir != RIGHT) dir = LEFT;  break; // Left arrow
-                    case 77: if (dir != LEFT)  dir = RIGHT; break; // Right arrow
-                }
-            } else {
-                // Standard ASCII inputs (WASD / q)
-                switch (ch) {
-                    case 'w': case 'W': if (dir != DOWN)  dir = UP;    break;
-                    case 's': case 'S': if (dir != UP)    dir = DOWN;  break;
-                    case 'a': case 'A': if (dir != RIGHT) dir = LEFT;  break;
-                    case 'd': case 'D': if (dir != LEFT)  dir = RIGHT; break;
-                    case 'q': case 'Q': gameOver = true;               break;
-                }
-            }
-        }
-    }
-
-    void update() {
-        if (dir == STOP) return;
-
-        // Calculate new head position based on direction
-        Point newHead = snake.front();
-        switch (dir) {
-            case UP:    newHead.y--; break;
-            case DOWN:  newHead.y++; break;
-            case LEFT:  newHead.x--; break;
-            case RIGHT: newHead.x++; break;
-            default:                 break;
-        }
-
-        // Wall collision check (Game Over)
-        if (newHead.x < 0 || newHead.x >= WIDTH || newHead.y < 0 || newHead.y >= HEIGHT) {
-            gameOver = true;
+    static void SetupTerminal() {
+#ifdef PLATFORM_WINDOWS
+    // No special terminal configuration required.
+    // The game can still use standard console output.
+#else
+        if (tcgetattr(STDIN_FILENO, &originalTerminal) == -1) {
             return;
         }
 
-        // Self collision check
-        for (const auto& segment : snake) {
-            if (newHead == segment) {
-                gameOver = true;
-                return;
+        termios raw = originalTerminal;
+        raw.c_lflag &= ~(ICANON | ECHO);
+        raw.c_cc[VMIN] = 0;
+        raw.c_cc[VTIME] = 0;
+
+        if (tcsetattr(STDIN_FILENO, TCSANOW, &raw) == -1) {
+            return;
+        }
+
+        originalFlags = fcntl(STDIN_FILENO, F_GETFL, 0);
+
+        if (originalFlags != -1) {
+            fcntl(STDIN_FILENO, F_SETFL, originalFlags | O_NONBLOCK);
+        }
+
+        terminalConfigured = true;
+#endif
+    }
+
+    static void RestoreTerminal() {
+#ifndef PLATFORM_WINDOWS
+        if (terminalConfigured) {
+            tcsetattr(STDIN_FILENO, TCSANOW, &originalTerminal);
+
+            if (originalFlags != -1) {
+                fcntl(STDIN_FILENO, F_SETFL, originalFlags);
+            }
+
+            terminalConfigured = false;
+        }
+#endif
+    }
+
+    static bool KeyPressed(int& key) {
+#ifdef PLATFORM_WINDOWS
+        if (!_kbhit()) {
+            return false;
+        }
+
+        key = _getch();
+
+        // Windows arrow keys use a prefix followed by a scan code.
+        if (key == 0 || key == 224) {
+            int scanCode = _getch();
+
+            switch (scanCode) {
+                case 72: key = 1001; break; // Up
+                case 80: key = 1002; break; // Down
+                case 75: key = 1003; break; // Left
+                case 77: key = 1004; break; // Right
+                default: key = -1; break;
             }
         }
 
-        // Move snake forward
-        snake.push_front(newHead);
+        return true;
+#else
+        unsigned char c;
 
-        // Check if food eaten
-        if (newHead == food) {
-            score += 10;
-            if (score > highScore) highScore = score;
-            spawnFood();
-            
-            // Slight speed increase every 50 points
-            if (score % 50 == 0 && speedMs > 50) {
-                speedMs -= 10;
-            }
+        if (read(STDIN_FILENO, &c, 1) != 1) {
+            return false;
+        }
+
+        key = c;
+        return true;
+#endif
+    }
+};
+
+// Snake Model
+class Snake {
+private:
+    std::deque<Point> body;
+    Direction dir;
+    bool grew = false;
+
+public:
+    Snake(int startX, int startY)
+        : dir(Direction::RIGHT) {
+        body.push_back({startX, startY});
+        body.push_back({startX - 1, startY});
+        body.push_back({startX - 2, startY});
+    }
+
+    void ChangeDirection(Direction newDir) {
+        // Prevent 180-degree turns.
+        if ((dir == Direction::UP && newDir == Direction::DOWN) ||
+            (dir == Direction::DOWN && newDir == Direction::UP) ||
+            (dir == Direction::LEFT && newDir == Direction::RIGHT) ||
+            (dir == Direction::RIGHT && newDir == Direction::LEFT)) {
+            return;
+        }
+
+        dir = newDir;
+    }
+
+    void Move() {
+        Point head = body.front();
+
+        switch (dir) {
+            case Direction::UP:
+                --head.y;
+                break;
+
+            case Direction::DOWN:
+                ++head.y;
+                break;
+
+            case Direction::LEFT:
+                --head.x;
+                break;
+
+            case Direction::RIGHT:
+                ++head.x;
+                break;
+        }
+
+        body.push_front(head);
+
+        if (grew) {
+            grew = false;
         } else {
-            // Remove tail if no food eaten
-            snake.pop_back();
+            body.pop_back();
         }
     }
 
-    void render() {
-        std::string buffer = "";
-        
-        // Build render buffer to minimize I/O flicker
-        buffer += "==================================\n";
-        buffer += "          C++ CONSOLE SNAKE       \n";
-        buffer += "==================================\n";
-        buffer += " Score: " + std::to_string(score) + "  | High Score: " + std::to_string(highScore) + "\n";
-        
-        // Top border
-        buffer += "+";
-        for (int i = 0; i < WIDTH; ++i) buffer += "-";
-        buffer += "+\n";
+    void Grow() {
+        grew = true;
+    }
 
-        // Grid contents
+    Point GetHead() const {
+        return body.front();
+    }
+
+    const std::deque<Point>& GetBody() const {
+        return body;
+    }
+
+    bool CheckSelfCollision() const {
+        Point head = body.front();
+
+        for (std::size_t i = 1; i < body.size(); ++i) {
+            if (head == body[i]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+};
+
+// Food Model
+class Food {
+private:
+    Point pos{};
+    std::mt19937 rng{
+        std::random_device{}()
+    };
+
+public:
+    bool Respawn(const std::deque<Point>& snakeBody) {
+        std::vector<Point> availablePositions;
+
+        for (int y = 1; y < HEIGHT - 1; ++y) {
+            for (int x = 1; x < WIDTH - 1; ++x) {
+                Point candidate{x, y};
+                bool occupied = false;
+
+                for (const auto& segment : snakeBody) {
+                    if (segment == candidate) {
+                        occupied = true;
+                        break;
+                    }
+                }
+
+                if (!occupied) {
+                    availablePositions.push_back(candidate);
+                }
+            }
+        }
+
+        // The snake has filled the board.
+        if (availablePositions.empty()) {
+            return false;
+        }
+
+        std::uniform_int_distribution<std::size_t> dist(
+            0, availablePositions.size() - 1
+        );
+
+        pos = availablePositions[dist(rng)];
+        return true;
+    }
+
+    Point GetPosition() const {
+        return pos;
+    }
+};
+
+// Game Controller
+class Game {
+private:
+    bool isRunning = true;
+    bool won = false;
+    int score = 0;
+
+    Snake snake;
+    Food food;
+
+    void ProcessInput() {
+        int key;
+
+        while (InputManager::KeyPressed(key)) {
+            if (key == 'q' || key == 'Q') {
+                isRunning = false;
+                return;
+            }
+
+            switch (key) {
+                case 'w':
+                case 'W':
+                case 1001:
+                    snake.ChangeDirection(Direction::UP);
+                    break;
+
+                case 's':
+                case 'S':
+                case 1002:
+                    snake.ChangeDirection(Direction::DOWN);
+                    break;
+
+                case 'a':
+                case 'A':
+                case 1003:
+                    snake.ChangeDirection(Direction::LEFT);
+                    break;
+
+                case 'd':
+                case 'D':
+                case 1004:
+                    snake.ChangeDirection(Direction::RIGHT);
+                    break;
+
+#ifndef PLATFORM_WINDOWS
+                // Unix terminals send arrow keys as ESC [ A/B/C/D.
+                case 27: {
+                    int second, third;
+
+                    if (InputManager::KeyPressed(second) &&
+                        InputManager::KeyPressed(third) &&
+                        second == '[') {
+                        switch (third) {
+                            case 'A':
+                                snake.ChangeDirection(Direction::UP);
+                                break;
+                            case 'B':
+                                snake.ChangeDirection(Direction::DOWN);
+                                break;
+                            case 'D':
+                                snake.ChangeDirection(Direction::LEFT);
+                                break;
+                            case 'C':
+                                snake.ChangeDirection(Direction::RIGHT);
+                                break;
+                        }
+                    }
+                    break;
+                }
+#endif
+            }
+        }
+    }
+
+    void Update() {
+        if (!isRunning) {
+            return;
+        }
+
+        // Check whether the next move eats food before moving.
+        Point currentHead = snake.GetHead();
+        Point nextHead = currentHead;
+
+        // Determine the next position using the current direction
+        // indirectly by moving, then check the resulting head.
+        snake.Move();
+
+        Point head = snake.GetHead();
+
+        // Wall collision
+        if (head.x <= 0 || head.x >= WIDTH - 1 ||
+            head.y <= 0 || head.y >= HEIGHT - 1) {
+            isRunning = false;
+            return;
+        }
+
+        // Self collision
+        if (snake.CheckSelfCollision()) {
+            isRunning = false;
+            return;
+        }
+
+        // Food consumption
+        if (head == food.GetPosition()) {
+            score += 10;
+            snake.Grow();
+
+            if (!food.Respawn(snake.GetBody())) {
+                won = true;
+                isRunning = false;
+            }
+        }
+    }
+
+    void Render() {
+        // Move cursor to top-left without clearing the entire screen.
+        std::cout << "\033[H";
+
+        std::string output;
+
         for (int y = 0; y < HEIGHT; ++y) {
-            buffer += "|";
             for (int x = 0; x < WIDTH; ++x) {
                 Point current{x, y};
-                if (current == snake.front()) {
-                    buffer += "O"; // Snake Head
+
+                if (x == 0 || x == WIDTH - 1 ||
+                    y == 0 || y == HEIGHT - 1) {
+                    output += '#';
+                } else if (current == snake.GetHead()) {
+                    output += 'O';
+                } else if (current == food.GetPosition()) {
+                    output += '*';
                 } else {
                     bool isBody = false;
-                    for (size_t i = 1; i < snake.size(); ++i) {
-                        if (snake[i] == current) {
-                            buffer += "o"; // Snake Body
+
+                    const auto& body = snake.GetBody();
+
+                    for (std::size_t i = 1; i < body.size(); ++i) {
+                        if (current == body[i]) {
                             isBody = true;
                             break;
                         }
                     }
-                    if (!isBody) {
-                        if (current == food) {
-                            buffer += "*"; // Food
-                        } else {
-                            buffer += " "; // Empty space
-                        }
-                    }
+
+                    output += isBody ? 'o' : ' ';
                 }
             }
-            buffer += "|\n";
+
+            output += '\n';
         }
 
-        // Bottom border
-        buffer += "+";
-        for (int i = 0; i < WIDTH; ++i) buffer += "-";
-        buffer += "+\n";
-        buffer += "Controls: W/A/S/D or Arrow Keys | Q to Quit\n";
+        output += "Score: " + std::to_string(score);
+        output += " | Controls: W/A/S/D or Arrow Keys | Quit: Q\n";
 
-        // Output complete frame in one call to reduce flicker
-        clearScreen();
-        std::cout << buffer;
+        std::cout << output << std::flush;
     }
 
-    bool isGameOver() const {
-        return gameOver;
+public:
+    Game()
+        : snake(WIDTH / 2, HEIGHT / 2) {
+        food.Respawn(snake.GetBody());
     }
 
-    int getSpeed() const {
-        return speedMs;
+    void Run() {
+        InputManager::SetupTerminal();
+
+        std::cout << "\033[2J\033[?25l";
+
+        try {
+            while (isRunning) {
+                ProcessInput();
+                Update();
+                Render();
+
+                if (isRunning) {
+                    Sleep(100);
+                }
+            }
+        } catch (...) {
+            InputManager::RestoreTerminal();
+            std::cout << "\033[?25h";
+            throw;
+        }
+
+        InputManager::RestoreTerminal();
+        std::cout << "\033[?25h";
+
+        if (won) {
+            std::cout << "\nYou Win! You filled the board.\n";
+        } else {
+            std::cout << "\nGame Over!\n";
+        }
+
+        std::cout << "Final Score: " << score << "\n";
     }
 };
 
 int main() {
-    setupConsole();
-    
-    // Hide terminal cursor using ANSI escape sequence
-    std::cout << "\033[?25l";
-
-    SnakeGame game;
-
-    // Main Game Loop
-    while (true) {
-        game.processInput();
-        game.update();
-        game.render();
-
-        if (game.isGameOver()) {
-            std::cout << "\n==================================\n";
-            std::cout << "           GAME OVER!             \n";
-            std::cout << "==================================\n";
-            std::cout << "Play again? (y/n): ";
-            
-            // Clear input buffer before asking to restart
-            while(kbhit()) getchChar();
-            
-            char choice;
-            // Blocking wait for restart decision
-            #if defined(_WIN32) || defined(_WIN64)
-                choice = _getch();
-            else {
-                // Restore canonical mode briefly for clean restart choice
-                termios term, oldt;
-                tcgetattr(0, &oldt);
-                term = oldt;
-                term.c_lflag |= ICANON | ECHO;
-                tcsetattr(0, TCSANOW, &term);
-                std::cin >> choice;
-                tcsetattr(0, TCSANOW, &oldt);
-                fcntl(0, F_SETFL, O_NONBLOCK);
-            }
-
-            if (choice == 'y' || choice == 'Y') {
-                game.resetGame();
-            } else {
-                break;
-            }
-        }
-
-        // Regulate frame rate / tick speed cross-platform
-        std::this_thread::sleep_for(std::chrono::milliseconds(game.getSpeed()));
-    }
-
-    // Restore terminal cursor on exit
-    std::cout << "\033[?25h";
-    std::cout << "Thanks for playing!\n";
+    Game game;
+    game.Run();
 
     return 0;
 }
