@@ -1,0 +1,37 @@
+[
+  {
+    "subtask": "Research the requirements and structure for building a basic 2-player Air Hockey game in Python using the turtle graphics module, including game loop, paddle movement, puck physics, and scorekeeping.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Identify key components needed (paddles, puck, goals, score tracker)",
+      "Outline the game loop and collision detection logic using turtle"
+    ]
+  },
+  {
+    "subtask": "Write the complete Python code for the Air Hockey game using the turtle module, incorporating paddle controls for two players, puck movement with wall and paddle bouncing logic, goal scoring, and a score display.",
+    "taskAssignedTo": 9,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Code runs without syntax errors and opens a turtle graphics window",
+      "Both players can move their paddles and hit the puck",
+      "Scoring and wall/paddle collisions function correctly"
+    ]
+  },
+  {
+    "subtask": "Write a clear user guide and setup instructions explaining how to run the Python air hockey script and detailing the keyboard controls for both players.",
+    "taskAssignedTo": 3,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Provide step-by-step instructions to execute the Python script",
+      "Clearly list the keyboard controls for Player 1 and Player 2"
+    ]
+  }
+]

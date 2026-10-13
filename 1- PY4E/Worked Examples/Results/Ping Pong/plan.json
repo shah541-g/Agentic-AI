@@ -1,0 +1,36 @@
+[
+  {
+    "subtask": "Research the requirements, game mechanics, and standard implementation of a Pong game using Python's turtle graphics module.",
+    "taskAssignedTo": "d4a6ef82-41ec-492d-9f67-4ef53a7d830b",
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Identify the core components: screen, paddles, ball, and scorekeeper.",
+      "List the necessary turtle functions and event listeners for keyboard controls."
+    ]
+  },
+  {
+    "subtask": "Write the complete Python code for the Pong game using the turtle module based on the research.",
+    "taskAssignedTo": "da3047b5-6d2f-4922-b719-e30809ebe8ba",
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Code runs without syntax errors and opens a game window.",
+      "Implements two controllable paddles, a bouncing ball, and wall collision/scoring logic."
+    ]
+  },
+  {
+    "subtask": "Write a clear user guide explaining how to run the Python script and the keyboard controls for both players.",
+    "taskAssignedTo": "6ed384bd-e7c1-4541-b68d-7cd4b4a03b3f",
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Includes step-by-step instructions to execute the code.",
+      "Clearly states the key bindings for Player 1 and Player 2."
+    ]
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "subtask": "Research the core game loop, window setup, and input handling for a top-down car racing game using Python's turtle module.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Identify optimal screen dimensions and background design for a top-down track.",
+      "Determine key bindings for smooth acceleration, braking, and steering."
+    ]
+  },
+  {
+    "subtask": "Write the technical specification and architectural outline for the turtle car racing game, defining game states, player car physics, and track boundaries.",
+    "taskAssignedTo": 3,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Define class structure for the Car and Track.",
+      "Specify collision detection and score/timer tracking mechanisms."
+    ]
+  },
+  {
+    "subtask": "Implement the complete Top-Down Car Racing game in Python using the turtle module based on the specifications.",
+    "taskAssignedTo": 9,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T1",
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Game runs without errors and renders a playable track and car.",
+      "Car responds correctly to user steering and acceleration inputs.",
+      "Includes basic collision detection with track boundaries or obstacles."
+    ]
+  },
+  {
+    "subtask": "Write user instructions and code documentation explaining how to run and play the top-down car racing game.",
+    "taskAssignedTo": 4,
+    "taskId": "T4",
+    "inputFromTasks": [
+      "T3"
+    ],
+    "acceptanceCriteria": [
+      "Provide clear instructions on keyboard controls.",
+      "Explain prerequisites to run the Python turtle script."
+    ]
+  }
+]

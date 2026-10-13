@@ -1,0 +1,36 @@
+[
+  {
+    "subtask": "Research the requirements and structure for building a Whack-a-Mole game using Python's turtle module, including target positioning, timer mechanisms, and click event handling.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Identify key turtle functions needed for drawing moles and handling clicks",
+      "Outline the game loop and timer logic"
+    ]
+  },
+  {
+    "subtask": "Write the complete Python code for the Whack-a-Mole game using the turtle module based on the researched structure, ensuring targets appear randomly and score tracking works.",
+    "taskAssignedTo": 9,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Code is fully functional and runnable in Python without external dependencies beyond turtle",
+      "Includes score tracking, random appearance of moles, and click detection"
+    ]
+  },
+  {
+    "subtask": "Create clear instructions and documentation on how to run the Whack-a-Mole Python turtle game, explaining the controls and game rules.",
+    "taskAssignedTo": 3,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Provides clear prerequisites and execution steps",
+      "Explains game rules and scoring clearly"
+    ]
+  }
+]

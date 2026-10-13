@@ -1,0 +1,38 @@
+[
+  {
+    "subtask": "Research the core game mechanics, control setup, and architecture for a Python Turtle 'Dodge the Blocks' game.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Define player movement controls using arrow keys",
+      "Outline block spawning and falling mechanics",
+      "Specify collision detection approach using turtle distance"
+    ]
+  },
+  {
+    "subtask": "Write the complete Python code for the 'Dodge the Blocks' game using the turtle module based on the researched mechanics.",
+    "taskAssignedTo": 9,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Code is fully executable in Python using only standard libraries",
+      "Includes player movement, falling obstacles, and collision detection",
+      "Includes a game-over condition and score tracking"
+    ]
+  },
+  {
+    "subtask": "Write user documentation explaining how to run the game, the controls, and the gameplay rules.",
+    "taskAssignedTo": 3,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Provides clear instructions on prerequisites and execution",
+      "Lists keyboard controls accurately"
+    ]
+  }
+]

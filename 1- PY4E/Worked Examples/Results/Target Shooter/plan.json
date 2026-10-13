@@ -1,0 +1,36 @@
+[
+  {
+    "subtask": "Research and outline the game mechanics, controls, and visual layout for a Python Turtle 'Target Shooter' game.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Define player movement and shooting mechanism.",
+      "Define target movement, scoring, and game over conditions."
+    ]
+  },
+  {
+    "subtask": "Write the Python code using the turtle module to implement the Target Shooter game based on the game mechanics outline.",
+    "taskAssignedTo": 9,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Code is fully functional and uses the turtle graphics library.",
+      "Includes score tracking and moving targets."
+    ]
+  },
+  {
+    "subtask": "Write a clear user guide and code documentation explaining how to run and play the Target Shooter game.",
+    "taskAssignedTo": 3,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Includes instructions on how to install and run the script.",
+      "Explains the controls and objective of the game clearly."
+    ]
+  }
+]

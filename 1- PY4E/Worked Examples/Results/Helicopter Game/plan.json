@@ -1,0 +1,37 @@
+[
+  {
+    "subtask": "Research the requirements, game mechanics, and UI library options (like Pygame or Turtle) for creating a 2D Helicopter game in Python.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Compare Pygame and Turtle for a cave-flyer game",
+      "List core mechanics needed (gravity, lift, obstacle generation, collision detection)"
+    ]
+  },
+  {
+    "subtask": "Write the complete Python source code for the Helicopter game using the chosen UI library, implementing smooth controls, cave generation, collision detection, and score tracking.",
+    "taskAssignedTo": 9,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Code is fully functional and runnable in Python",
+      "Helicopter responds to user input without crashing into walls prematurely",
+      "Game over state triggers correctly upon wall collision"
+    ]
+  },
+  {
+    "subtask": "Write a user-facing guide explaining how to install prerequisites, run the Python helicopter game script, and control the helicopter.",
+    "taskAssignedTo": 3,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Provides clear installation instructions for dependencies",
+      "Explains keyboard controls clearly"
+    ]
+  }
+]

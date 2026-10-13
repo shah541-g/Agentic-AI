@@ -1,0 +1,104 @@
+{
+  "report": {
+    "tasks_assigned": 3,
+    "tasks_completed": 3,
+    "tasks_failed": 0,
+    "agents": [
+      {
+        "name": "Ahmad",
+        "agent_id": 3,
+        "role": "writer",
+        "status": "IDLE",
+        "assigned_tasks": 1,
+        "completed_tasks": 1,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Akram",
+        "agent_id": 4,
+        "role": "writer",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Afzal",
+        "agent_id": 5,
+        "role": "writer",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Ali",
+        "agent_id": 6,
+        "role": "researcher",
+        "status": "IDLE",
+        "assigned_tasks": 1,
+        "completed_tasks": 1,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Muhammad",
+        "agent_id": 7,
+        "role": "researcher",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Asad",
+        "agent_id": 8,
+        "role": "researcher",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Saqib",
+        "agent_id": 9,
+        "role": "coder",
+        "status": "IDLE",
+        "assigned_tasks": 1,
+        "completed_tasks": 1,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Bilal",
+        "agent_id": 10,
+        "role": "coder",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Yasoob",
+        "agent_id": 11,
+        "role": "coder",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      }
+    ]
+  },
+  "tasks": {
+    "T1": {
+      "status": "COMPLETED",
+      "verification_feedback": "The result thoroughly covers core mechanics, turtle performance optimizations, and provides working event handling/game loop logic along with obstacle movement and scoring structure."
+    },
+    "T2": {
+      "status": "COMPLETED",
+      "verification_feedback": "The code successfully implements Flappy Bird using the turtle module with gravity, jumping, pipes, collision detection, and score tracking, which timed out only because it is an interactive GUI application meant to run continuously."
+    },
+    "T3": {
+      "status": "COMPLETED",
+      "verification_feedback": "The result successfully provides clear step-by-step instructions for running the Python script, lists the necessary prerequisites, and explains the game controls."
+    }
+  }
+}

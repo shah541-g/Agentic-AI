@@ -1,0 +1,38 @@
+[
+  {
+    "subtask": "Research the core mechanics, grid dimensions, and standard ghost/player behaviors of a classic Pac-Man game to inform implementation.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Document the grid coordinate system suitable for turtle graphics.",
+      "List the essential rules for Pac-Man movement, ghost movement, and collision detection."
+    ]
+  },
+  {
+    "subtask": "Design the game map layout, pellet placement data structures, and the main game window initialization using Python's turtle module.",
+    "taskAssignedTo": 3,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Create a 2D list or grid representation for walls and dots.",
+      "Write a function to draw the static maze using turtle."
+    ]
+  },
+  {
+    "subtask": "Write the complete Python code using turtle to implement Pac-Man movement, ghost AI, collision detection, and score tracking.",
+    "taskAssignedTo": 9,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T1",
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Pac-Man moves smoothly and responds to arrow key inputs.",
+      "Ghosts move within the maze and reset or end game upon colliding with Pac-Man.",
+      "Eating all pellets results in a win state."
+    ]
+  }
+]

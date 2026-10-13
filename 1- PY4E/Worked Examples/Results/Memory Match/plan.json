@@ -1,0 +1,37 @@
+[
+  {
+    "subtask": "Research and outline the game logic, grid dimensions, and card state management for a Python Turtle Memory Match game.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Define the grid size (e.g., 4x4 cards).",
+      "Specify how card pairs, hidden states, and clicked states are tracked."
+    ]
+  },
+  {
+    "subtask": "Write the Python code using the turtle module to implement the Memory Match game, including drawing the grid, handling mouse clicks, and checking for matching pairs.",
+    "taskAssignedTo": 9,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Game window opens successfully using turtle.",
+      "Cards flip and display symbols or colors on click.",
+      "Mismatched cards flip back and matching pairs stay revealed."
+    ]
+  },
+  {
+    "subtask": "Create documentation and a README file explaining how to run the Memory Match game and the rules to play.",
+    "taskAssignedTo": 3,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Includes prerequisites and Python execution steps.",
+      "Explains the card flipping and matching rules clearly."
+    ]
+  }
+]

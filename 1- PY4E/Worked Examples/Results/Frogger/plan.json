@@ -1,0 +1,37 @@
+[
+  {
+    "subtask": "Research standard Frogger mechanics, screen dimensions, grid layout, and key control mappings suitable for a Python Turtle implementation.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Define grid size and window dimensions.",
+      "List core game elements: player frog, moving cars, and safe zones/goals."
+    ]
+  },
+  {
+    "subtask": "Design the class architecture and game state logic for the Frogger game using Python and the turtle module.",
+    "taskAssignedTo": 3,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Outline Frog, Car, and GameManager classes.",
+      "Specify collision detection and scoring logic."
+    ]
+  },
+  {
+    "subtask": "Write the complete Python code for the Frogger game using the turtle graphics library based on the design specifications.",
+    "taskAssignedTo": 9,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T1",
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Code is fully functional and runnable in Python.",
+      "Implements keyboard controls for movement and real-time obstacle updates."
+    ]
+  }
+]

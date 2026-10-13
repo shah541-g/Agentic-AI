@@ -1,0 +1,104 @@
+{
+  "report": {
+    "tasks_assigned": 3,
+    "tasks_completed": 3,
+    "tasks_failed": 0,
+    "agents": [
+      {
+        "name": "Ahmad",
+        "agent_id": 3,
+        "role": "writer",
+        "status": "IDLE",
+        "assigned_tasks": 1,
+        "completed_tasks": 1,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Akram",
+        "agent_id": 4,
+        "role": "writer",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Afzal",
+        "agent_id": 5,
+        "role": "writer",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Ali",
+        "agent_id": 6,
+        "role": "researcher",
+        "status": "IDLE",
+        "assigned_tasks": 1,
+        "completed_tasks": 1,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Muhammad",
+        "agent_id": 7,
+        "role": "researcher",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Asad",
+        "agent_id": 8,
+        "role": "researcher",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Saqib",
+        "agent_id": 9,
+        "role": "coder",
+        "status": "IDLE",
+        "assigned_tasks": 1,
+        "completed_tasks": 1,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Bilal",
+        "agent_id": 10,
+        "role": "coder",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Yasoob",
+        "agent_id": 11,
+        "role": "coder",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      }
+    ]
+  },
+  "tasks": {
+    "T1": {
+      "status": "COMPLETED",
+      "verification_feedback": "The result thoroughly details the grid dimensions and layout, includes a coordinate system context (tile scale, wrap-around tunnel), and comprehensively lists the essential rules for Pac-Man movement, ghost behaviors, and collision/state mechanics."
+    },
+    "T2": {
+      "status": "COMPLETED",
+      "verification_feedback": "The result successfully creates a 2D list layout representing walls, pellets, and other elements, implements a function to draw the static maze and pellets using Python's turtle module, and properly initializes the main game window."
+    },
+    "T3": {
+      "status": "COMPLETED",
+      "verification_feedback": "The provided code successfully implements Pac-Man movement, ghost AI, collision detection, and score tracking using Python's turtle graphics module, meeting all acceptance criteria."
+    }
+  }
+}

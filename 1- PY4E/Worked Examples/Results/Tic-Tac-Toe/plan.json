@@ -1,0 +1,38 @@
+[
+  {
+    "subtask": "Research the requirements and structure for building a Tic-Tac-Toe game using Python's turtle graphics library, including game state logic and UI layout.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Identify key functions needed from the turtle module",
+      "Outline the data structure for the 3x3 board grid",
+      "Define win-condition checking logic"
+    ]
+  },
+  {
+    "subtask": "Write the Python code using the turtle module to implement the Tic-Tac-Toe game, including board rendering, click event handling, player turns, and win detection.",
+    "taskAssignedTo": 9,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Code successfully opens a turtle graphics window and draws the grid",
+      "Clicking on grid cells places alternating 'X' and 'O' marks",
+      "Game correctly detects wins, losses, or ties and displays the result"
+    ]
+  },
+  {
+    "subtask": "Create a clear README document explaining how to run the Python turtle Tic-Tac-Toe game, including prerequisites and game controls.",
+    "taskAssignedTo": 3,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Includes step-by-step instructions to execute the script",
+      "Explains mouse controls for making moves"
+    ]
+  }
+]

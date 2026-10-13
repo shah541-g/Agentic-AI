@@ -1,0 +1,36 @@
+[
+  {
+    "subtask": "Research the basic game mechanics, required classes, and Pygame/Turtle architecture needed for a Brick Breaker game in Python using the turtle module.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Identify key components (paddle, ball, bricks, score).",
+      "Outline event handling for paddle movement in Turtle."
+    ]
+  },
+  {
+    "subtask": "Write the complete Python code for a Brick Breaker game using the turtle module based on the research.",
+    "taskAssignedTo": 9,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Code is fully functional and runnable in Python.",
+      "Includes paddle, moving ball, breakable bricks, and game over conditions."
+    ]
+  },
+  {
+    "subtask": "Write documentation explaining how to run the Brick Breaker game, the controls, and a brief overview of the code structure.",
+    "taskAssignedTo": 3,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Clear instructions on execution.",
+      "Description of keyboard controls."
+    ]
+  }
+]

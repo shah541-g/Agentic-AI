@@ -1,0 +1,37 @@
+[
+  {
+    "subtask": "Design the large maze layout as a 2D grid/matrix, define the player start position, exit position, and boundary walls.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Define a grid size of at least 25x25 cells for a big maze",
+      "Provide a clear 2D list representation with walls and paths"
+    ]
+  },
+  {
+    "subtask": "Write the complete Python code using the turtle module to render the large maze, handle player movement controls, and implement win-condition collision detection.",
+    "taskAssignedTo": 9,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Code uses the turtle module and runs without syntax errors",
+      "Player can move smoothly using keyboard arrow keys without passing through maze walls",
+      "Detects when the player reaches the exit and displays a win message"
+    ]
+  },
+  {
+    "subtask": "Write a user guide explaining how to run the Python script, the controls for the Maze Escape game, and instructions on how to navigate the big maze.",
+    "taskAssignedTo": 3,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Includes clear prerequisites and execution steps",
+      "Documents keyboard controls clearly"
+    ]
+  }
+]

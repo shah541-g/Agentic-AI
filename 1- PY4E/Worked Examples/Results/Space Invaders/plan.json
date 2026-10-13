@@ -1,0 +1,36 @@
+[
+  {
+    "subtask": "Research the basic requirements, game mechanics, and setup for a Space Invaders clone using Python's turtle module.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Identify necessary turtle graphics functions and event bindings.",
+      "Outline the core game elements: player, invaders, bullets, and score."
+    ]
+  },
+  {
+    "subtask": "Write the Python code to implement the Space Invaders game using turtle based on the research plan.",
+    "taskAssignedTo": 9,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Game window and player movement (left/right) function correctly.",
+      "Invaders move and descend, and firing bullets works with collision detection."
+    ]
+  },
+  {
+    "subtask": "Write comprehensive instructions and a README explaining how to run the Space Invaders Python game.",
+    "taskAssignedTo": 3,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Include clear prerequisites and Python execution steps.",
+      "Document the keyboard controls for the player."
+    ]
+  }
+]

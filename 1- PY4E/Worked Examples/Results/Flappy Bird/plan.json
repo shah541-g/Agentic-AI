@@ -1,0 +1,36 @@
+[
+  {
+    "subtask": "Research the core mechanics of Flappy Bird (gravity, jump velocity, pipe generation, collision detection) and how to implement them efficiently using Python's turtle graphics module.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Identifies turtle methods suitable for game loops and event handling.",
+      "Outlines the logic for obstacle movement and scoring."
+    ]
+  },
+  {
+    "subtask": "Write the complete Python code for the Flappy Bird game using the turtle module, incorporating the researched mechanics like gravity, jumping, pipes, collision detection, and score tracking.",
+    "taskAssignedTo": 9,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Code is fully functional and runnable in Python.",
+      "Includes controls (e.g., Spacebar to jump) and game-over conditions."
+    ]
+  },
+  {
+    "subtask": "Write documentation and setup instructions explaining how to run the Python turtle Flappy Bird game, including any prerequisites.",
+    "taskAssignedTo": 3,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Provides clear, step-by-step instructions to execute the script.",
+      "Explains the game controls clearly."
+    ]
+  }
+]
