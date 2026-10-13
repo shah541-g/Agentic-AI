@@ -1,0 +1,36 @@
+[
+  {
+    "subtask": "Research the requirements and libraries needed to build a console-based Snake game in C++, including handling non-blocking keyboard input and timing across different platforms (Windows/Linux).",
+    "taskAssignedTo": "5da03619-4ef4-4abf-8a02-e82ec475605d",
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Identify standard libraries or platform-specific headers needed for non-blocking input.",
+      "Outline the core game loop structure and state management requirements."
+    ]
+  },
+  {
+    "subtask": "Write the C++ source code for the console-based Snake game, implementing the game loop, snake movement, collision detection, food generation, and score tracking based on the research.",
+    "taskAssignedTo": "026ad762-c5c8-4638-8e45-55df85644600",
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "Code compiles successfully with a standard C++ compiler.",
+      "Implements playable Snake mechanics with score tracking and win/loss conditions."
+    ]
+  },
+  {
+    "subtask": "Write comprehensive documentation and instructions on how to compile, build, and run the C++ Snake game on various operating systems.",
+    "taskAssignedTo": "01ec25c4-255e-4b11-ad20-3d808253711c",
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Provide clear compilation commands for GCC and MSVC.",
+      "Explain the controls and rules of the game."
+    ]
+  }
+]

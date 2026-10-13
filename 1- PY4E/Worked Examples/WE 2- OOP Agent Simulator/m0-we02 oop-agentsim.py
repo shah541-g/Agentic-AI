@@ -6,6 +6,7 @@ import uuid
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from enum import Enum, auto
+from pathlib import Path
 from typing import Any, Optional, override
 
 from dotenv import load_dotenv
@@ -49,6 +50,60 @@ def extract_json(text: str) -> Any:
             except json.JSONDecodeError:
                 continue
     raise ValueError(f"Could not parse JSON from LLM output:\n{text}")
+
+
+# ---------------------------------------------------------------------------
+# Output-folder helpers
+# ---------------------------------------------------------------------------
+
+# Maps a markdown code-fence language to a file extension.
+CODE_EXTENSIONS = {
+    "python": ".py", "py": ".py",
+    "javascript": ".js", "js": ".js",
+    "typescript": ".ts", "ts": ".ts",
+    "java": ".java",
+    "c": ".c",
+    "cpp": ".cpp", "c++": ".cpp",
+    "csharp": ".cs", "cs": ".cs",
+    "go": ".go",
+    "rust": ".rs",
+    "php": ".php",
+    "ruby": ".rb",
+    "html": ".html",
+    "css": ".css",
+    "sql": ".sql",
+    "bash": ".sh", "sh": ".sh", "shell": ".sh",
+    "json": ".json",
+    "yaml": ".yaml", "yml": ".yaml",
+}
+
+
+def prepare_output_dir(raw_path: str) -> Path:
+    """Validate the user-supplied absolute folder path and create it if needed."""
+    raw_path = raw_path.strip().strip('"').strip("'")
+    if not raw_path:
+        raise ValueError("No output folder was provided.")
+
+    path = Path(raw_path).expanduser()
+    if not path.is_absolute():
+        raise ValueError(f"Output folder must be an absolute path, got: {raw_path}")
+    if path.exists() and not path.is_dir():
+        raise ValueError(f"Output path exists but is not a folder: {path}")
+
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _slug(text: str) -> str:
+    """Make a string safe to use inside a file name."""
+    return re.sub(r"[^A-Za-z0-9._-]+", "_", text).strip("_") or "task"
+
+
+def _output_text(result: Any) -> str:
+    """Pull the raw text out of an agent result dict."""
+    if isinstance(result, dict) and "output" in result:
+        return str(result["output"])
+    return str(result)
 
 
 class TaskStatus(Enum):
@@ -380,7 +435,8 @@ genuinely needs another task's output. Do not add markdown or commentary.
     def plan_to_json(self, tasks: list[Task]) -> str:
         return json.dumps([task.to_dict() for task in tasks], indent=2)
 
-    def execute(self, prompt: str) -> dict[str, Any]:
+    def execute(self, prompt: str, output_dir: Optional[Path] = None) -> dict[str, Any]:
+        """Plan and run the request. If output_dir is given, results are saved there."""
         if self.status == AgentStatus.BUSY:
             raise RuntimeError("Orchestrator is already processing a request.")
 
@@ -489,7 +545,7 @@ genuinely needs another task's output. Do not add markdown or commentary.
                         self.tasksFailed += 1
                     pending.clear()
 
-            return {
+            outcome: dict[str, Any] = {
                 "plan": [task.to_dict() for task in tasks],
                 "report": self.get_report(),
                 "results": {
@@ -502,9 +558,75 @@ genuinely needs another task's output. Do not add markdown or commentary.
                     for task in tasks
                 },
             }
+
+            if output_dir is not None:
+                outcome["saved_files"] = self.save_outputs(
+                    tasks, output_dir, agent_by_id, outcome
+                )
+
+            return outcome
         finally:
             self.status = AgentStatus.IDLE
             self.task = None
+
+    def save_outputs(
+        self,
+        tasks: list[Task],
+        output_dir: Path,
+        agent_by_id: dict[str, TaskAgent],
+        outcome: dict[str, Any],
+    ) -> list[str]:
+        """Write each completed task's output to its own file, plus plan/report.
+
+        Files are named like  T1_writer_Ahmad.md . For coder tasks the first
+        fenced code block is also saved as a runnable file (e.g. T2_coder_Saqib.py).
+        Failed tasks produce no output file; they are listed in summary.json.
+        """
+        output_dir.mkdir(parents=True, exist_ok=True)
+        saved: list[str] = []
+
+        def write(name: str, content: str) -> None:
+            path = output_dir / name
+            path.write_text(content, encoding="utf-8")
+            saved.append(str(path))
+
+        for task in tasks:
+            if task.status != TaskStatus.COMPLETED or task.result is None:
+                continue
+
+            agent = agent_by_id.get(task.assignTo) if task.assignTo else None
+            role = agent.role.value if agent else "task"
+            agent_name = agent.name if agent else "unassigned"
+            base = f"{_slug(task.task_id)}_{role}_{_slug(agent_name)}"
+            text = _output_text(task.result)
+
+            header = f"<!-- Task {task.task_id}: {task.task} -->\n\n"
+            write(f"{base}.md", header + text + "\n")
+
+            if agent and agent.role == AgentRole.CODER:
+                match = re.search(r"```([\w+#-]*)[ \t]*\n(.*?)```", text, re.DOTALL)
+                if match:
+                    lang = match.group(1).strip().lower()
+                    ext = CODE_EXTENSIONS.get(lang, ".txt")
+                    write(f"{base}{ext}", match.group(2).rstrip() + "\n")
+
+        write("plan.json", self.plan_to_json(tasks))
+        write("summary.json", json.dumps(
+            {
+                "report": outcome["report"],
+                "tasks": {
+                    task.task_id: {
+                        "status": task.status.name,
+                        "verification_feedback": task.verification_feedback,
+                    }
+                    for task in tasks
+                },
+            },
+            indent=2,
+            default=str,
+        ))
+
+        return saved
 
     def _retry_or_fail(self, task: Task, agent: TaskAgent, base_prompt: str) -> None:
         if task.retry_count < task.max_retries:
@@ -577,12 +699,24 @@ def printSystemName():
           ▀■▄▒                                                  ▀■▄▒                                ▀■▄▒    
         """)
 
+
+def ask_output_dir() -> Path:
+    """Keep asking until the user gives a usable absolute folder path."""
+    while True:
+        raw = input("Output folder (absolute path): ")
+        try:
+            return prepare_output_dir(raw)
+        except (ValueError, OSError) as exc:
+            print(f"Invalid folder: {exc}")
+
+
 if __name__ == "__main__":
     printSystemName()
     orchestrator = Orchestrator()
     user_prompt = input("Task: ")
+    output_folder = ask_output_dir()
 
-    outcome = orchestrator.execute(user_prompt)
+    outcome = orchestrator.execute(user_prompt, output_folder)
 
     print("=== TASK PLAN ===")
     print(json.dumps(outcome["plan"], indent=2))
@@ -590,3 +724,6 @@ if __name__ == "__main__":
     print(json.dumps(outcome["results"], indent=2, default=str))
     print("\n=== REPORT ===")
     print(json.dumps(outcome["report"], indent=2))
+    print(f"\n=== SAVED FILES ({output_folder}) ===")
+    for saved_path in outcome.get("saved_files", []):
+        print(saved_path)

@@ -1,0 +1,104 @@
+{
+  "report": {
+    "tasks_assigned": 3,
+    "tasks_completed": 3,
+    "tasks_failed": 0,
+    "agents": [
+      {
+        "name": "Ahmad",
+        "agent_id": "01ec25c4-255e-4b11-ad20-3d808253711c",
+        "role": "writer",
+        "status": "IDLE",
+        "assigned_tasks": 1,
+        "completed_tasks": 1,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Akram",
+        "agent_id": "c92ce851-e5f3-4032-9ef0-332b3c077e00",
+        "role": "writer",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Afzal",
+        "agent_id": "dbc0b923-d93f-4a59-96ba-921b83d80078",
+        "role": "writer",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Ali",
+        "agent_id": "5da03619-4ef4-4abf-8a02-e82ec475605d",
+        "role": "researcher",
+        "status": "IDLE",
+        "assigned_tasks": 1,
+        "completed_tasks": 1,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Muhammad",
+        "agent_id": "b00854a6-b454-4f6d-bfd0-bfd190a0f637",
+        "role": "researcher",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Asad",
+        "agent_id": "28f93c28-3dd6-40ed-9332-5d512e28215c",
+        "role": "researcher",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Saqib",
+        "agent_id": "026ad762-c5c8-4638-8e45-55df85644600",
+        "role": "coder",
+        "status": "IDLE",
+        "assigned_tasks": 1,
+        "completed_tasks": 1,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Bilal",
+        "agent_id": "678e099b-d463-492f-99d3-e4d954801f12",
+        "role": "coder",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Yasoob",
+        "agent_id": "c8e77ccd-2d98-4194-9c27-6383bbb5210b",
+        "role": "coder",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      }
+    ]
+  },
+  "tasks": {
+    "T1": {
+      "status": "COMPLETED",
+      "verification_feedback": "The result thoroughly identifies the platform-specific headers and libraries needed for non-blocking input on both Windows and Linux, and clearly outlines the core game loop structure and state management requirements."
+    },
+    "T2": {
+      "status": "COMPLETED",
+      "verification_feedback": "The provided C++ code implements a fully functional console-based Snake game with cross-platform input handling, game loop, collision detection, score tracking, and clean rendering buffer."
+    },
+    "T3": {
+      "status": "COMPLETED",
+      "verification_feedback": "The documentation provides clear compilation instructions for both GCC and MSVC, and thoroughly explains the controls, rules, and objectives of the game across various operating systems."
+    }
+  }
+}
