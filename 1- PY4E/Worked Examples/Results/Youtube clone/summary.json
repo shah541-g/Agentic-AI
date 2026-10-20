@@ -1,0 +1,108 @@
+{
+  "report": {
+    "tasks_assigned": 4,
+    "tasks_completed": 4,
+    "tasks_failed": 0,
+    "agents": [
+      {
+        "name": "Ahmad",
+        "agent_id": 3,
+        "role": "writer",
+        "status": "IDLE",
+        "assigned_tasks": 1,
+        "completed_tasks": 1,
+        "failed_tasks": 1
+      },
+      {
+        "name": "Akram",
+        "agent_id": 4,
+        "role": "writer",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Afzal",
+        "agent_id": 5,
+        "role": "writer",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Ali",
+        "agent_id": 6,
+        "role": "researcher",
+        "status": "IDLE",
+        "assigned_tasks": 1,
+        "completed_tasks": 1,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Muhammad",
+        "agent_id": 7,
+        "role": "researcher",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Asad",
+        "agent_id": 8,
+        "role": "researcher",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Saqib",
+        "agent_id": 9,
+        "role": "coder",
+        "status": "IDLE",
+        "assigned_tasks": 1,
+        "completed_tasks": 1,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Bilal",
+        "agent_id": 10,
+        "role": "coder",
+        "status": "IDLE",
+        "assigned_tasks": 1,
+        "completed_tasks": 1,
+        "failed_tasks": 0
+      },
+      {
+        "name": "Yasoob",
+        "agent_id": 11,
+        "role": "coder",
+        "status": "IDLE",
+        "assigned_tasks": 0,
+        "completed_tasks": 0,
+        "failed_tasks": 0
+      }
+    ]
+  },
+  "tasks": {
+    "T1": {
+      "status": "COMPLETED",
+      "verification_feedback": "The result thoroughly lists all core YouTube UI components (navigation bar, sidebar, feed grid, search bar, video player modal) and explicitly specifies responsive layout breakpoints for mobile and desktop."
+    },
+    "T2": {
+      "status": "COMPLETED",
+      "verification_feedback": "The provided code is entirely self-contained within a single HTML file, utilizes Tailwind CSS via CDN for styling, perfectly captures YouTube's dark aesthetic, and includes placeholder images and mock video metadata as requested."
+    },
+    "T3": {
+      "status": "COMPLETED",
+      "verification_feedback": "The vanilla JavaScript successfully implements sidebar toggling, category chip selection with filtering, and an interactive mock video playback modal meeting all acceptance criteria."
+    },
+    "T4": {
+      "status": "COMPLETED",
+      "verification_feedback": "The result successfully documents clear steps to run the HTML file in any browser and highlights key interactive features like sidebar toggling, category filtering, and video modal playback."
+    }
+  }
+}

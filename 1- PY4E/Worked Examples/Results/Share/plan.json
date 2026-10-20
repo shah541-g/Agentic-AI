@@ -1,0 +1,88 @@
+[
+  {
+    "subtask": "Design the database schema to store email details (sender, date, body, tags, status) and create the database connection module.",
+    "taskAssignedTo": 9,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Schema supports storing sender, date, body, tags, and post status.",
+      "Database connection module is successfully implemented."
+    ]
+  },
+  {
+    "subtask": "Research and document the APIs/libraries required for email fetching (IMAP/Gmail API), WhatsApp messaging (Twilio/Meta Cloud API), LinkedIn posting, and LLM integration.",
+    "taskAssignedTo": 6,
+    "taskId": "T2",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "Identifies python libraries or APIs for email, WhatsApp, LinkedIn, and LLM.",
+      "Provides clear setup and authentication requirements for each service."
+    ]
+  },
+  {
+    "subtask": "Write a Python script to fetch emails, parse sender, date, and body, automatically generate tags based on content, and store them into the database.",
+    "taskAssignedTo": 10,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T1",
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Script successfully connects to email and parses 500+ mails.",
+      "Sender, date, body, and generated tags are correctly saved to the database."
+    ]
+  },
+  {
+    "subtask": "Implement a scheduler script to automate the daily fetching and storing of new newsletters into the database.",
+    "taskAssignedTo": 11,
+    "taskId": "T4",
+    "inputFromTasks": [
+      "T3"
+    ],
+    "acceptanceCriteria": [
+      "Scheduler runs daily without manual intervention.",
+      "New newsletters are successfully parsed and added to the database."
+    ]
+  },
+  {
+    "subtask": "Write a script that retrieves the oldest un-processed mail, uses an LLM API to generate a post text and an image, and sends them via WhatsApp with interactive options (1 for approve, 2 for suggestion).",
+    "taskAssignedTo": 9,
+    "taskId": "T5",
+    "inputFromTasks": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "acceptanceCriteria": [
+      "Fetches the oldest mail and calls LLM API for text and image generation.",
+      "Sends the generated content to WhatsApp with clear prompt instructions for options 1 and 2."
+    ]
+  },
+  {
+    "subtask": "Implement the WhatsApp webhook/handler to process user replies (handling approval '1' or suggestions '2' with feedback loop to LLM for updates) and trigger LinkedIn posting upon final approval.",
+    "taskAssignedTo": 10,
+    "taskId": "T6",
+    "inputFromTasks": [
+      "T2",
+      "T5"
+    ],
+    "acceptanceCriteria": [
+      "Correctly handles user input '1' to trigger LinkedIn publishing.",
+      "Correctly handles user input '2', takes user suggestions, updates content via LLM, and resends for approval."
+    ]
+  },
+  {
+    "subtask": "Write comprehensive documentation and user guide explaining how to set up credentials, run the scripts, and operate the WhatsApp approval workflow.",
+    "taskAssignedTo": 3,
+    "taskId": "T7",
+    "inputFromTasks": [
+      "T3",
+      "T4",
+      "T6"
+    ],
+    "acceptanceCriteria": [
+      "Includes step-by-step instructions for environment variables and API keys.",
+      "Explains the daily automation and WhatsApp interactive loop clearly."
+    ]
+  }
+]

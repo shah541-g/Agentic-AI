@@ -428,7 +428,7 @@ class Task:
         task_id: Optional[str] = None,
         input_from_tasks: Optional[list[str]] = None,
         acceptance_criteria: Optional[list[str]] = None,
-        max_retries: int = 2,
+        max_retries: int = 10,
     ):
         self.__task = task
         self.__status = status
@@ -1102,12 +1102,15 @@ def printSystemName():
 
 """
 
-  art_right = """
-  ██████ ██████ ██████ ██████ ██████  ██ ██     ██████ ██████
-  ██     ██  ██   ██   ██  ██ ██  ██  ██ ██     ██  ██   ██
-  ██     ██  ██   ██   ██  ██ ██████  ██ ██     ██  ██   ██
-  ██████ ██████   ██   ██████ ██      ██ ██████ ██████   ██
-  """
+  art_right = r"""
+ _____       _         ______ _ _       _   
+|  __ \     | |        | ___ (_) |     | |  
+| |  \/ ___ | | ___   _| |_/ /_| | ___ | |_ 
+| | __ / _ \| |/ / | | |  __/| | |/ _ \| __|
+| |_\ \ (_) |   <| |_| | |   | | | (_) | |_ 
+ \____/\___/|_|\_\\__,_\_|   |_|_|\___/ \__|
+                                            
+                                              """
 
   GAP = "   "  # spacing between the two arts
 

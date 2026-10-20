@@ -1,0 +1,507 @@
+<!-- Task T3: Add vanilla JavaScript to the HTML file to implement interactive frontend features such as sidebar toggling, category filter chips selection, and a mock video playback modal. -->
+
+```html
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Clone</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        ytblack: '#0f0f0f',
+                        ytsurface: '#212121',
+                        ytsurfacehover: '#272727',
+                        ytborder: '#3f3f3f',
+                        yttextprimary: '#f1f1f1',
+                        yttextsecondary: '#aaa',
+                        ytsidebar: '#0f0f0f',
+                        ytblue: '#3ea6ff',
+                        ytred: '#ff0000'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #aaa;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #fff;
+        }
+        body {
+            background-color: #0f0f0f;
+            color: #f1f1f1;
+            font-family: "Roboto", Arial, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-ytblack text-yttextprimary antialiased overflow-x-hidden">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="fixed top-0 left-0 w-full h-14 bg-ytblack z-50 flex items-center justify-between px-4 border-b border-transparent">
+        <!-- Left: Hamburger & Logo -->
+        <div class="flex items-center space-x-4">
+            <button id="menu-btn" class="p-2 hover:bg-ytsurfacehover rounded-full text-yttextprimary transition">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+            <a href="#" class="flex items-center space-x-1">
+                <div class="bg-ytred text-white px-2 py-1 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-play text-xs"></i>
+                </div>
+                <span class="font-bold text-xl tracking-tighter">YouTube</span>
+            </a>
+        </div>
+
+        <!-- Center: Search Bar & Mic -->
+        <div class="flex items-center flex-1 max-w-2xl mx-4 justify-center">
+            <div class="flex items-center w-full">
+                <div class="flex items-center w-full bg-[#121212] border border-ytborder rounded-l-full px-4 py-2 focus-within:border-ytblue">
+                    <input type="text" placeholder="Search" class="w-full bg-transparent outline-none text-yttextprimary placeholder-yttextsecondary text-sm">
+                </div>
+                <button class="bg-ytsurfacehover border border-l-0 border-ytborder px-6 py-2 rounded-r-full hover:bg-[#303030] text-yttextprimary transition">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+            <button class="ml-3 p-2.5 bg-ytsurface hover:bg-ytsurfacehover rounded-full text-yttextprimary transition">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+        </div>
+
+        <!-- Right: Actions & Avatar -->
+        <div class="flex items-center space-x-3">
+            <button class="p-2.5 hover:bg-ytsurfacehover rounded-full text-yttextprimary transition relative">
+                <i class="fa-solid fa-video text-lg"></i>
+            </button>
+            <button class="p-2.5 hover:bg-ytsurfacehover rounded-full text-yttextprimary transition relative">
+                <span class="absolute top-1.5 right-1.5 bg-ytred text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full">9+</span>
+                <i class="fa-regular fa-bell text-lg"></i>
+            </button>
+            <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-500 cursor-pointer">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces" alt="Avatar" class="w-full h-full object-cover">
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP WRAPPER -->
+    <div class="flex pt-14 min-h-screen">
+
+        <!-- NAVIGATION SIDEBAR -->
+        <aside id="sidebar" class="fixed left-0 top-14 bottom-0 w-64 bg-ytblack px-3 py-3 overflow-y-auto z-40 transition-all duration-200 hidden md:block">
+            <!-- Group 1 -->
+            <div class="space-y-1 pb-3 border-b border-ytborder">
+                <a href="#" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl bg-ytsurface hover:bg-ytsurfacehover font-medium text-sm">
+                    <i class="fa-solid fa-house w-6 text-center text-lg"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-ytsurfacehover font-normal text-sm">
+                    <i class="fa-solid fa-bolt w-6 text-center text-lg"></i>
+                    <span>Shorts</span>
+                </a>
+                <a href="#" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-ytsurfacehover font-normal text-sm">
+                    <i class="fa-solid fa-clapperboard w-6 text-center text-lg"></i>
+                    <span>Subscriptions</span>
+                </a>
+            </div>
+
+            <!-- Group 2 (Library) -->
+            <div class="space-y-1 py-3 border-b border-ytborder">
+                <div class="px-3 py-1 font-semibold text-sm flex items-center justify-between">
+                    <span>You</span>
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </div>
+                <a href="#" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-ytsurfacehover text-sm">
+                    <i class="fa-solid fa-user-shield w-6 text-center"></i>
+                    <span>Your Channel</span>
+                </a>
+                <a href="#" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-ytsurfacehover text-sm">
+                    <i class="fa-solid fa-clock-rotate-left w-6 text-center"></i>
+                    <span>History</span>
+                </a>
+                <a href="#" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-ytsurfacehover text-sm">
+                    <i class="fa-solid fa-play w-6 text-center"></i>
+                    <span>Your Videos</span>
+                </a>
+                <a href="#" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-ytsurfacehover text-sm">
+                    <i class="fa-solid fa-clock w-6 text-center"></i>
+                    <span>Watch Later</span>
+                </a>
+                <a href="#" class="flex items-center space-x-6 px-3 py-2.5 rounded-xl hover:bg-ytsurfacehover text-sm">
+                    <i class="fa-solid fa-thumbs-up w-6 text-center"></i>
+                    <span>Liked Videos</span>
+                </a>
+            </div>
+
+            <!-- Group 3 (Subscriptions) -->
+            <div class="space-y-1 py-3 border-b border-ytborder">
+                <div class="px-3 py-1 font-semibold text-sm text-yttextsecondary">Subscriptions</div>
+                <a href="#" class="flex items-center space-x-4 px-3 py-2 rounded-xl hover:bg-ytsurfacehover text-sm">
+                    <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=50&h=50&fit=crop" class="w-6 h-6 rounded-full object-cover">
+                    <span class="truncate">Tech Insider</span>
+                </a>
+                <a href="#" class="flex items-center space-x-4 px-3 py-2 rounded-xl hover:bg-ytsurfacehover text-sm">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop" class="w-6 h-6 rounded-full object-cover">
+                    <span class="truncate">Design Basics</span>
+                </a>
+                <a href="#" class="flex items-center space-x-4 px-3 py-2 rounded-xl hover:bg-ytsurfacehover text-sm">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop" class="w-6 h-6 rounded-full object-cover">
+                    <span class="truncate">Code Academy</span>
+                </a>
+            </div>
+
+            <!-- Footer Meta -->
+            <div class="py-3 px-3 text-[11px] text-yttextsecondary space-y-2">
+                <p>About Press Copyright Contact us Creators Advertise Developers</p>
+                <p>Terms Privacy Policy & Safety How YouTube works Test new features</p>
+                <p class="text-ytborder mt-3">&copy; 2026 Google LLC</p>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main id="main-content" class="flex-1 md:ml-64 p-4 transition-all duration-200">
+            
+            <!-- Category Chips Bar -->
+            <div id="filter-chips" class="sticky top-14 bg-ytblack z-30 pb-3 pt-1 flex items-center space-x-3 overflow-x-auto no-scrollbar whitespace-nowrap">
+                <button class="chip active bg-yttextprimary text-ytblack px-3 py-1.5 rounded-lg text-sm font-medium transition" data-category="All">All</button>
+                <button class="chip bg-ytsurface hover:bg-ytsurfacehover text-yttextprimary px-3 py-1.5 rounded-lg text-sm font-medium transition" data-category="Gaming">Gaming</button>
+                <button class="chip bg-ytsurface hover:bg-ytsurfacehover text-yttextprimary px-3 py-1.5 rounded-lg text-sm font-medium transition" data-category="Music">Music</button>
+                <button class="chip bg-ytsurface hover:bg-ytsurfacehover text-yttextprimary px-3 py-1.5 rounded-lg text-sm font-medium transition" data-category="Live">Live</button>
+                <button class="chip bg-ytsurface hover:bg-ytsurfacehover text-yttextprimary px-3 py-1.5 rounded-lg text-sm font-medium transition" data-category="Podcasts">Podcasts</button>
+                <button class="chip bg-ytsurface hover:bg-ytsurfacehover text-yttextprimary px-3 py-1.5 rounded-lg text-sm font-medium transition" data-category="Programming">Programming</button>
+                <button class="chip bg-ytsurface hover:bg-ytsurfacehover text-yttextprimary px-3 py-1.5 rounded-lg text-sm font-medium transition" data-category="UX/UI">UX/UI</button>
+                <button class="chip bg-ytsurface hover:bg-ytsurfacehover text-yttextprimary px-3 py-1.5 rounded-lg text-sm font-medium transition" data-category="Cooking">Cooking</button>
+                <button class="chip bg-ytsurface hover:bg-ytsurfacehover text-yttextprimary px-3 py-1.5 rounded-lg text-sm font-medium transition" data-category="Gadgets">Gadgets</button>
+                <button class="chip bg-ytsurface hover:bg-ytsurfacehover text-yttextprimary px-3 py-1.5 rounded-lg text-sm font-medium transition" data-category="Python">Python</button>
+            </div>
+
+            <!-- Video Feed Grid -->
+            <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
+                
+                <!-- Video Card Item -->
+                <div class="video-card flex flex-col cursor-pointer group" data-category="Programming" data-title="Building a Fullstack YouTube Clone using Tailwind CSS & Modern Web Design Systems" data-channel="Code Creators" data-views="125K views" data-time="2 days ago" data-img="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&h=338&fit=crop">
+                    <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-ytsurface">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&h=338&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="Thumbnail">
+                        <span class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded font-semibold">14:22</span>
+                    </div>
+                    <div class="flex mt-3 space-x-3">
+                        <div class="w-9 h-9 rounded-full bg-gray-600 flex-shrink-0 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex flex-col flex-1">
+                            <h3 class="font-semibold text-sm leading-snug line-clamp-2 text-yttextprimary">Building a Fullstack YouTube Clone using Tailwind CSS & Modern Web Design Systems</h3>
+                            <span class="text-xs text-yttextsecondary mt-1 flex items-center">
+                                Code Creators <i class="fa-solid fa-circle-check text-[10px] ml-1"></i>
+                            </span>
+                            <span class="text-xs text-yttextsecondary">125K views &bull; 2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Card Item -->
+                <div class="video-card flex flex-col cursor-pointer group" data-category="Gaming" data-title="The Ultimate Cyberpunk RPG Gameplay Walkthrough - 4K 60FPS Max Settings" data-channel="Pixel Gaming" data-views="1.2M views" data-time="1 week ago" data-img="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=338&fit=crop">
+                    <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-ytsurface">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=338&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="Thumbnail">
+                        <span class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded font-semibold">45:10</span>
+                    </div>
+                    <div class="flex mt-3 space-x-3">
+                        <div class="w-9 h-9 rounded-full bg-gray-600 flex-shrink-0 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100&h=100&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex flex-col flex-1">
+                            <h3 class="font-semibold text-sm leading-snug line-clamp-2 text-yttextprimary">The Ultimate Cyberpunk RPG Gameplay Walkthrough - 4K 60FPS Max Settings</h3>
+                            <span class="text-xs text-yttextsecondary mt-1 flex items-center">
+                                Pixel Gaming <i class="fa-solid fa-circle-check text-[10px] ml-1"></i>
+                            </span>
+                            <span class="text-xs text-yttextsecondary">1.2M views &bull; 1 week ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Card Item -->
+                <div class="video-card flex flex-col cursor-pointer group" data-category="UX/UI" data-title="Top 10 CSS Tricks You Didn't Know Existed in 2026" data-channel="Web Dev Simplified" data-views="45K views" data-time="5 hours ago" data-img="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=338&fit=crop">
+                    <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-ytsurface">
+                        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=338&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="Thumbnail">
+                        <span class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded font-semibold">08:05</span>
+                    </div>
+                    <div class="flex mt-3 space-x-3">
+                        <div class="w-9 h-9 rounded-full bg-gray-600 flex-shrink-0 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex flex-col flex-1">
+                            <h3 class="font-semibold text-sm leading-snug line-clamp-2 text-yttextprimary">Top 10 CSS Tricks You Didn't Know Existed in 2026</h3>
+                            <span class="text-xs text-yttextsecondary mt-1 flex items-center">
+                                Web Dev Simplified
+                            </span>
+                            <span class="text-xs text-yttextsecondary">45K views &bull; 5 hours ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Card Item -->
+                <div class="video-card flex flex-col cursor-pointer group" data-category="Programming" data-title="Clean Architecture in Node.js & Enterprise Best Practices" data-channel="Tech Lead" data-views="88K views" data-time="3 days ago" data-img="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=338&fit=crop">
+                    <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-ytsurface">
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&h=338&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="Thumbnail">
+                        <span class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded font-semibold">22:15</span>
+                    </div>
+                    <div class="flex mt-3 space-x-3">
+                        <div class="w-9 h-9 rounded-full bg-gray-600 flex-shrink-0 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex flex-col flex-1">
+                            <h3 class="font-semibold text-sm leading-snug line-clamp-2 text-yttextprimary">Clean Architecture in Node.js & Enterprise Best Practices</h3>
+                            <span class="text-xs text-yttextsecondary mt-1 flex items-center">
+                                Tech Lead <i class="fa-solid fa-circle-check text-[10px] ml-1"></i>
+                            </span>
+                            <span class="text-xs text-yttextsecondary">88K views &bull; 3 days ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Card Item -->
+                <div class="video-card flex flex-col cursor-pointer group" data-category="Gaming" data-title="Understanding Matrix Math & Vectors in Game Development" data-channel="Code Creators" data-views="32K views" data-time="1 day ago" data-img="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&h=338&fit=crop">
+                    <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-ytsurface">
+                        <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&h=338&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="Thumbnail">
+                        <span class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded font-semibold">10:01</span>
+                    </div>
+                    <div class="flex mt-3 space-x-3">
+                        <div class="w-9 h-9 rounded-full bg-gray-600 flex-shrink-0 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex flex-col flex-1">
+                            <h3 class="font-semibold text-sm leading-snug line-clamp-2 text-yttextprimary">Understanding Matrix Math & Vectors in Game Development</h3>
+                            <span class="text-xs text-yttextsecondary mt-1 flex items-center">
+                                Code Creators <i class="fa-solid fa-circle-check text-[10px] ml-1"></i>
+                            </span>
+                            <span class="text-xs text-yttextsecondary">32K views &bull; 1 day ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Card Item -->
+                <div class="video-card flex flex-col cursor-pointer group" data-category="Music" data-title="Lo-Fi Coding Beats to Relax & Study To (Live Stream)" data-channel="ChillHop Music" data-views="3.4K watching now" data-time="Live" data-img="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=338&fit=crop">
+                    <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-ytsurface">
+                        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=338&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="Thumbnail">
+                        <span class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded font-semibold">03:45</span>
+                    </div>
+                    <div class="flex mt-3 space-x-3">
+                        <div class="w-9 h-9 rounded-full bg-gray-600 flex-shrink-0 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100&h=100&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex flex-col flex-1">
+                            <h3 class="font-semibold text-sm leading-snug line-clamp-2 text-yttextprimary">Lo-Fi Coding Beats to Relax & Study To (Live Stream)</h3>
+                            <span class="text-xs text-yttextsecondary mt-1 flex items-center">
+                                ChillHop Music <i class="fa-solid fa-circle-check text-[10px] ml-1"></i>
+                            </span>
+                            <span class="text-xs text-yttextsecondary">3.4K watching now</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Card Item -->
+                <div class="video-card flex flex-col cursor-pointer group" data-category="Podcasts" data-title="Inside the World's Most Advanced AI Research Facility" data-channel="Future Tech" data-views="510K views" data-time="4 days ago" data-img="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&h=338&fit=crop">
+                    <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-ytsurface">
+                        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&h=338&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="Thumbnail">
+                        <span class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded font-semibold">18:20</span>
+                    </div>
+                    <div class="flex mt-3 space-x-3">
+                        <div class="w-9 h-9 rounded-full bg-gray-600 flex-shrink-0 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex flex-col flex-1">
+                            <h3 class="font-semibold text-sm leading-snug line-clamp-2 text-yttextprimary">Inside the World's Most Advanced AI Research Facility</h3>
+                            <span class="text-xs text-yttextsecondary mt-1 flex items-center">
+                                Future Tech
+                            </span>
+                            <span class="text-xs text-yttextsecondary">510K views &bull; 4 days ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Card Item -->
+                <div class="video-card flex flex-col cursor-pointer group" data-category="Gadgets" data-title="Custom Mechanical Keyboard Building Guide for Programmers" data-channel="Switch Craft" data-views="99K views" data-time="6 days ago" data-img="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=338&fit=crop">
+                    <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-ytsurface">
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=338&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="Thumbnail">
+                        <span class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded font-semibold">12:00</span>
+                    </div>
+                    <div class="flex mt-3 space-x-3">
+                        <div class="w-9 h-9 rounded-full bg-gray-600 flex-shrink-0 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex flex-col flex-1">
+                            <h3 class="font-semibold text-sm leading-snug line-clamp-2 text-yttextprimary">Custom Mechanical Keyboard Building Guide for Programmers</h3>
+                            <span class="text-xs text-yttextsecondary mt-1 flex items-center">
+                                Switch Craft
+                            </span>
+                            <span class="text-xs text-yttextsecondary">99K views &bull; 6 days ago</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MOCK VIDEO PLAYBACK MODAL -->
+    <div id="video-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-ytsurface border border-ytborder w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl relative flex flex-col">
+            <!-- Modal Header / Close Button -->
+            <div class="flex items-center justify-between px-4 py-3 border-b border-ytborder">
+                <h3 id="modal-title" class="font-semibold text-sm truncate">Playing Video</h3>
+                <button id="close-modal-btn" class="p-2 hover:bg-ytsurfacehover rounded-full text-yttextprimary transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <!-- Video Container -->
+            <div class="relative w-full aspect-video bg-black flex items-center justify-center">
+                <video id="modal-video" class="w-full h-full object-cover" controls autoplay>
+                    <!-- Sample open video source for testing -->
+                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <!-- Video Info Section -->
+            <div class="p-4 flex flex-col space-y-2">
+                <h2 id="modal-full-title" class="text-base font-bold text-yttextprimary">Full Video Title Goes Here</h2>
+                <div class="flex items-center justify-between">
+                    <span id="modal-channel" class="text-xs text-yttextsecondary font-medium">Channel Name</span>
+                    <div class="flex items-center space-x-2">
+                        <button class="bg-ytsurfacehover hover:bg-[#303030] px-3 py-1.5 rounded-full text-xs font-semibold flex items-center space-x-1">
+                            <i class="fa-regular fa-thumbs-up"></i> <span>12K</span>
+                        </button>
+                        <button class="bg-ytsurfacehover hover:bg-[#303030] px-3 py-1.5 rounded-full text-xs font-semibold">
+                            <i class="fa-solid fa-share"></i> Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive JavaScript Implementation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Sidebar Toggling Feature
+            const menuBtn = document.getElementById('menu-btn');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+
+            menuBtn.addEventListener('click', () => {
+                if (sidebar.classList.contains('md:block')) {
+                    sidebar.classList.remove('md:block');
+                    sidebar.classList.add('hidden');
+                    mainContent.classList.remove('md:ml-64');
+                    mainContent.classList.add('md:ml-0');
+                } else {
+                    sidebar.classList.remove('hidden');
+                    sidebar.classList.add('md:block');
+                    mainContent.classList.remove('md:ml-0');
+                    mainContent.classList.add('md:ml-64');
+                }
+            });
+
+            // 2. Category Filter Chips Selection Feature
+            const chips = document.querySelectorAll('.chip');
+            const videoCards = document.querySelectorAll('.video-card');
+
+            chips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    // Update active state styling across chips
+                    chips.forEach(c => {
+                        c.classList.remove('bg-yttextprimary', 'text-ytblack');
+                        c.classList.add('bg-ytsurface', 'hover:bg-ytsurfacehover', 'text-yttextprimary');
+                    });
+                    chip.classList.remove('bg-ytsurface', 'hover:bg-ytsurfacehover', 'text-yttextprimary');
+                    chip.classList.add('bg-yttextprimary', 'text-ytblack');
+
+                    // Filter video cards based on category
+                    const selectedCategory = chip.getAttribute('data-category');
+                    videoCards.forEach(card => {
+                        const cardCategory = card.getAttribute('data-category');
+                        if (selectedCategory === 'All' || cardCategory === selectedCategory) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // 3. Mock Video Playback Modal Feature
+            const videoModal = document.getElementById('video-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const modalVideo = document.getElementById('modal-video');
+            const modalTitle = document.getElementById('modal-title');
+            const modalFullTitle = document.getElementById('modal-full-title');
+            const modalChannel = document.getElementById('modal-channel');
+
+            videoCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const title = card.getAttribute('data-title');
+                    const channel = card.getAttribute('data-channel');
+                    const views = card.getAttribute('data-views');
+                    const time = card.getAttribute('data-time');
+
+                    // Populate modal details
+                    modalTitle.textContent = title;
+                    modalFullTitle.textContent = title;
+                    modalChannel.textContent = `${channel} • ${views} • ${time}`;
+
+                    // Show modal and play mock video
+                    videoModal.classList.remove('hidden');
+                    modalVideo.currentTime = 0;
+                    modalVideo.play().catch(e => console.log("Auto-play prevented:", e));
+                });
+            });
+
+            // Close modal functionality
+            const closeModal = () => {
+                videoModal.classList.add('hidden');
+                modalVideo.pause();
+            };
+
+            closeModalBtn.addEventListener('click', closeModal);
+
+            // Close modal when clicking backdrop outside modal content
+            videoModal.addEventListener('click', (e) => {
+                if (e.target === videoModal) {
+                    closeModal();
+                }
+            });
+
+            // Close on ESC key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !videoModal.classList.contains('hidden')) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+```
+
+### Usage Note
+1. Save the code into a single file named `index.html`.
+2. Open the file directly in any modern web browser (Chrome, Firefox, Edge, Safari) to explore the interactive YouTube clone frontend.
+3. **Features included:**
+   - Click the **Hamburger menu icon** (`☰`) in the top left to toggle the collapsible side navigation.
+   - Click any **category filter chip** (e.g., *Gaming*, *Programming*, *Music*) to dynamically filter the video feed.
+   - Click any **video card item** to launch the interactive video playback modal with an embedded video player and dynamic video information.

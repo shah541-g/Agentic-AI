@@ -1,0 +1,50 @@
+[
+  {
+    "subtask": "Gather UI/UX requirements and layout specifications for a YouTube frontend clone, including navigation sidebar, video feed grid, search bar, and video player modal structure.",
+    "taskAssignedTo": 6,
+    "taskId": "T1",
+    "inputFromTasks": [],
+    "acceptanceCriteria": [
+      "List core YouTube UI components needed in the mockup",
+      "Specify responsive layout breakpoints"
+    ]
+  },
+  {
+    "subtask": "Write the complete HTML5 and CSS3 code (using Tailwind CSS via CDN for styling) within a single file to create the YouTube clone frontend, including sidebar, navbar, video grid, and responsive design.",
+    "taskAssignedTo": 9,
+    "taskId": "T2",
+    "inputFromTasks": [
+      "T1"
+    ],
+    "acceptanceCriteria": [
+      "All code is contained within a single HTML file",
+      "Includes functional CSS layout matching YouTube's dark/light aesthetic",
+      "Includes placeholder images and mock video metadata"
+    ]
+  },
+  {
+    "subtask": "Add vanilla JavaScript to the HTML file to implement interactive frontend features such as sidebar toggling, category filter chips selection, and a mock video playback modal.",
+    "taskAssignedTo": 10,
+    "taskId": "T3",
+    "inputFromTasks": [
+      "T2"
+    ],
+    "acceptanceCriteria": [
+      "Sidebar collapse/expand toggle works",
+      "Category chips highlight on click",
+      "Clicking a video card opens a mock player view"
+    ]
+  },
+  {
+    "subtask": "Document instructions on how to open and interact with the single-file YouTube clone in any web browser.",
+    "taskAssignedTo": 3,
+    "taskId": "T4",
+    "inputFromTasks": [
+      "T3"
+    ],
+    "acceptanceCriteria": [
+      "Provide clear steps to run the HTML file",
+      "Highlight key interactive features included in the frontend"
+    ]
+  }
+]
