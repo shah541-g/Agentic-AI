@@ -1,0 +1,5 @@
+ip,user,time,method,path,protocol,status,size,referrer,user_agent
+192.168.1.8,-,10/Oct/2025:13:56:01 +0000,POST,/api/checkout,HTTP/1.1,500,245,https://example.com/cart,Mozilla/5.0
+10.0.0.2,-,10/Oct/2025:13:56:10 +0000,GET,/api/inventory,HTTP/1.1,502,0,-,curl/7.68.0
+10.0.0.2,-,10/Oct/2025:13:56:30 +0000,POST,/api/upload,HTTP/1.1,500,412,-,Mozilla/5.0
+192.168.1.20,-,10/Oct/2025:13:56:50 +0000,PUT,/api/settings,HTTP/1.1,502,128,https://example.com/settings,Mozilla/5.0

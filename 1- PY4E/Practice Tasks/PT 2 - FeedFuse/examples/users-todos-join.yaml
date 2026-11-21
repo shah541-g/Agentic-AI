@@ -1,0 +1,21 @@
+merge:
+  mode: join
+  on: user_id
+  join_type: inner
+
+sources:
+  - name: users
+    url: https://jsonplaceholder.typicode.com/users
+    records: ""
+    map:
+      user_id: id
+      name: name
+      city: address.city
+
+  - name: todos
+    url: https://jsonplaceholder.typicode.com/todos
+    records: ""
+    map:
+      user_id: userId
+      todo: title
+      done: completed

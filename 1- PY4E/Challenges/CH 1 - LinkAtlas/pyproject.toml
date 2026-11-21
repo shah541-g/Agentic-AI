@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "linkatlas"
+version = "0.1.0"
+description = "A polite depth-limited web crawler that maps external links as a graph."
+readme = "README.md"
+authors = [{ name = "LinkAtlas Contributors" }]
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.28.0",
+    "beautifulsoup4>=4.12.0",
+    "rich>=13.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "responses>=0.25.0",
+]
+
+[project.scripts]
+linkatlas = "linkatlas.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["linkatlas*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

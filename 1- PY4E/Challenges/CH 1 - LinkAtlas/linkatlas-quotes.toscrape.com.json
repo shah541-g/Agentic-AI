@@ -1,0 +1,1200 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "meta": {
+    "tool": "linkatlas",
+    "version": "0.1.0",
+    "seed": "https://quotes.toscrape.com/",
+    "started_at": "2026-11-17T10:45:53Z",
+    "finished_at": "2026-11-17T10:45:57Z",
+    "options": {
+      "max_depth": 1,
+      "max_pages": 5,
+      "delay": 1.0,
+      "timeout": 10.0,
+      "retries": 1,
+      "include_subdomains": false,
+      "user_agent": "LinkAtlas/0.1 (+https://github.com/your-username/linkatlas)"
+    },
+    "robots": {
+      "https://quotes.toscrape.com": "missing"
+    },
+    "truncated": true,
+    "interrupted": false
+  },
+  "nodes": [
+    {
+      "id": "https://quotes.toscrape.com/",
+      "type": "page",
+      "depth": 0,
+      "state": "ok",
+      "status": 200,
+      "title": "Quotes to Scrape",
+      "redirect_to": null
+    },
+    {
+      "id": "http://quotes.toscrape.com/author/Albert-Einstein/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/author/Albert-Einstein",
+      "type": "page",
+      "depth": 1,
+      "state": "redirect",
+      "status": 308,
+      "title": null,
+      "redirect_to": "http://quotes.toscrape.com/author/Albert-Einstein/"
+    },
+    {
+      "id": "https://quotes.toscrape.com/author/Andre-Gide",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/author/Eleanor-Roosevelt",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/author/J-K-Rowling",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/author/Jane-Austen",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/author/Marilyn-Monroe",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/author/Steve-Martin",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/author/Thomas-A-Edison",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/login",
+      "type": "page",
+      "depth": 1,
+      "state": "ok",
+      "status": 200,
+      "title": "Quotes to Scrape",
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/page/2/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/abilities/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/adulthood/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/aliteracy/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/be-yourself/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/books/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/books/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/change/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "ok",
+      "status": 200,
+      "title": "Quotes to Scrape",
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/choices/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/classic/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "ok",
+      "status": 200,
+      "title": "Quotes to Scrape",
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/edison/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/failure/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/friends/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/friendship/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/humor/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/humor/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/inspirational/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/inspirational/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/life/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/life/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/live/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/love/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/love/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/miracle/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/miracles/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/misattributed-eleanor-roosevelt/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/obvious/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/paraphrased/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/reading/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/simile/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/simile/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/success/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/thinking/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/truth/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/value/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://quotes.toscrape.com/tag/world/page/1/",
+      "type": "page",
+      "depth": 1,
+      "state": "not_crawled",
+      "status": null,
+      "title": null,
+      "redirect_to": null
+    },
+    {
+      "id": "https://www.goodreads.com/quotes",
+      "type": "external",
+      "domain": "goodreads.com"
+    },
+    {
+      "id": "https://www.zyte.com/",
+      "type": "external",
+      "domain": "zyte.com"
+    }
+  ],
+  "edges": [
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/author/Albert-Einstein",
+      "kind": "internal",
+      "count": 3,
+      "text": "(about)",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/author/Andre-Gide",
+      "kind": "internal",
+      "count": 1,
+      "text": "(about)",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/author/Eleanor-Roosevelt",
+      "kind": "internal",
+      "count": 1,
+      "text": "(about)",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/author/J-K-Rowling",
+      "kind": "internal",
+      "count": 1,
+      "text": "(about)",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/author/Jane-Austen",
+      "kind": "internal",
+      "count": 1,
+      "text": "(about)",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/author/Marilyn-Monroe",
+      "kind": "internal",
+      "count": 1,
+      "text": "(about)",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/author/Steve-Martin",
+      "kind": "internal",
+      "count": 1,
+      "text": "(about)",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/author/Thomas-A-Edison",
+      "kind": "internal",
+      "count": 1,
+      "text": "(about)",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/login",
+      "kind": "internal",
+      "count": 1,
+      "text": "Login",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/page/2/",
+      "kind": "internal",
+      "count": 1,
+      "text": "Next →",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/abilities/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "abilities",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/adulthood/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "adulthood",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/aliteracy/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "aliteracy",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/be-yourself/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "be-yourself",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/books/",
+      "kind": "internal",
+      "count": 1,
+      "text": "books",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/books/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "books",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/change/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "change",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/choices/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "choices",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/classic/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "classic",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "deep-thoughts",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/edison/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "edison",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/failure/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "failure",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/friends/",
+      "kind": "internal",
+      "count": 1,
+      "text": "friends",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/friendship/",
+      "kind": "internal",
+      "count": 1,
+      "text": "friendship",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/humor/",
+      "kind": "internal",
+      "count": 1,
+      "text": "humor",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/humor/page/1/",
+      "kind": "internal",
+      "count": 2,
+      "text": "humor",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/inspirational/",
+      "kind": "internal",
+      "count": 1,
+      "text": "inspirational",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/inspirational/page/1/",
+      "kind": "internal",
+      "count": 3,
+      "text": "inspirational",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/life/",
+      "kind": "internal",
+      "count": 1,
+      "text": "life",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/life/page/1/",
+      "kind": "internal",
+      "count": 2,
+      "text": "life",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/live/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "live",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/love/",
+      "kind": "internal",
+      "count": 1,
+      "text": "love",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/love/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "love",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/miracle/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "miracle",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/miracles/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "miracles",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/misattributed-eleanor-roosevelt/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "misattributed-eleanor-roosevelt",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/obvious/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "obvious",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/paraphrased/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "paraphrased",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/reading/",
+      "kind": "internal",
+      "count": 1,
+      "text": "reading",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/simile/",
+      "kind": "internal",
+      "count": 1,
+      "text": "simile",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/simile/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "simile",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/success/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "success",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/thinking/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "thinking",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/truth/",
+      "kind": "internal",
+      "count": 1,
+      "text": "truth",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/value/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "value",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://quotes.toscrape.com/tag/world/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "world",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://www.goodreads.com/quotes",
+      "kind": "external",
+      "count": 1,
+      "text": "GoodReads.com",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/",
+      "target": "https://www.zyte.com/",
+      "kind": "external",
+      "count": 1,
+      "text": "Zyte",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/author/Albert-Einstein",
+      "target": "http://quotes.toscrape.com/author/Albert-Einstein/",
+      "kind": "redirect",
+      "count": 1,
+      "text": "",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/login",
+      "target": "https://quotes.toscrape.com/",
+      "kind": "internal",
+      "count": 1,
+      "text": "Quotes to Scrape",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/login",
+      "target": "https://www.goodreads.com/quotes",
+      "kind": "external",
+      "count": 1,
+      "text": "GoodReads.com",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/login",
+      "target": "https://www.zyte.com/",
+      "kind": "external",
+      "count": 1,
+      "text": "Zyte",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/",
+      "kind": "internal",
+      "count": 1,
+      "text": "Quotes to Scrape",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/author/Albert-Einstein",
+      "kind": "internal",
+      "count": 1,
+      "text": "(about)",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/login",
+      "kind": "internal",
+      "count": 1,
+      "text": "Login",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/tag/books/",
+      "kind": "internal",
+      "count": 1,
+      "text": "books",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "deep-thoughts",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/tag/friends/",
+      "kind": "internal",
+      "count": 1,
+      "text": "friends",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/tag/friendship/",
+      "kind": "internal",
+      "count": 1,
+      "text": "friendship",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/tag/humor/",
+      "kind": "internal",
+      "count": 1,
+      "text": "humor",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/tag/inspirational/",
+      "kind": "internal",
+      "count": 1,
+      "text": "inspirational",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/tag/life/",
+      "kind": "internal",
+      "count": 1,
+      "text": "life",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/tag/love/",
+      "kind": "internal",
+      "count": 1,
+      "text": "love",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/tag/reading/",
+      "kind": "internal",
+      "count": 1,
+      "text": "reading",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/tag/simile/",
+      "kind": "internal",
+      "count": 1,
+      "text": "simile",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/tag/thinking/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "thinking",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/tag/truth/",
+      "kind": "internal",
+      "count": 1,
+      "text": "truth",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://quotes.toscrape.com/tag/world/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "world",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://www.goodreads.com/quotes",
+      "kind": "external",
+      "count": 1,
+      "text": "GoodReads.com",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/change/page/1/",
+      "target": "https://www.zyte.com/",
+      "kind": "external",
+      "count": 1,
+      "text": "Zyte",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/",
+      "kind": "internal",
+      "count": 1,
+      "text": "Quotes to Scrape",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/author/Albert-Einstein",
+      "kind": "internal",
+      "count": 1,
+      "text": "(about)",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/login",
+      "kind": "internal",
+      "count": 1,
+      "text": "Login",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/tag/books/",
+      "kind": "internal",
+      "count": 1,
+      "text": "books",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/tag/change/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "change",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/tag/friends/",
+      "kind": "internal",
+      "count": 1,
+      "text": "friends",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/tag/friendship/",
+      "kind": "internal",
+      "count": 1,
+      "text": "friendship",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/tag/humor/",
+      "kind": "internal",
+      "count": 1,
+      "text": "humor",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/tag/inspirational/",
+      "kind": "internal",
+      "count": 1,
+      "text": "inspirational",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/tag/life/",
+      "kind": "internal",
+      "count": 1,
+      "text": "life",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/tag/love/",
+      "kind": "internal",
+      "count": 1,
+      "text": "love",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/tag/reading/",
+      "kind": "internal",
+      "count": 1,
+      "text": "reading",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/tag/simile/",
+      "kind": "internal",
+      "count": 1,
+      "text": "simile",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/tag/thinking/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "thinking",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/tag/truth/",
+      "kind": "internal",
+      "count": 1,
+      "text": "truth",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://quotes.toscrape.com/tag/world/page/1/",
+      "kind": "internal",
+      "count": 1,
+      "text": "world",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://www.goodreads.com/quotes",
+      "kind": "external",
+      "count": 1,
+      "text": "GoodReads.com",
+      "nofollow": false
+    },
+    {
+      "source": "https://quotes.toscrape.com/tag/deep-thoughts/page/1/",
+      "target": "https://www.zyte.com/",
+      "kind": "external",
+      "count": 1,
+      "text": "Zyte",
+      "nofollow": false
+    }
+  ],
+  "summary": {
+    "pages_requested": 5,
+    "pages_ok": 4,
+    "state_counts": {
+      "ok": 4,
+      "redirect": 1,
+      "not_crawled": 43
+    },
+    "external_unique_urls": 2,
+    "external_unique_domains": 2,
+    "top_external_domains": [
+      {
+        "domain": "goodreads.com",
+        "urls": 1,
+        "linked_from_pages": 4
+      },
+      {
+        "domain": "zyte.com",
+        "urls": 1,
+        "linked_from_pages": 4
+      }
+    ],
+    "problems": [],
+    "ignored_links": 0
+  }
+}

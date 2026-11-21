@@ -1,0 +1,32 @@
+defaults:
+  timeout: 10
+  retries: 2
+
+merge:
+  mode: combine
+
+sources:
+  - name: weather
+    url: https://api.open-meteo.com/v1/forecast
+    params:
+      latitude: "31.5"
+      longitude: "74.3"
+      current_weather: "true"
+    map:
+      temp_c: current_weather.temperature
+      wind_kmh: current_weather.windspeed
+
+  - name: python_repo
+    url: https://api.github.com/repos/python/cpython
+    map:
+      stars: stargazers_count
+      open_issues: open_issues_count
+      language: language
+
+  - name: btc
+    url: https://api.coingecko.com/api/v3/simple/price
+    params:
+      ids: bitcoin
+      vs_currencies: usd
+    map:
+      price_usd: bitcoin.usd

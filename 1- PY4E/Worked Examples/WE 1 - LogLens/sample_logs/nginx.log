@@ -1,0 +1,20 @@
+192.168.1.5 - - [10/Oct/2025:13:55:36 +0000] "GET /index.html HTTP/1.1" 200 1024 "-" "Mozilla/5.0"
+192.168.1.6 - frank [10/Oct/2025:13:55:37 +0000] "POST /api/login HTTP/1.1" 200 512 "https://example.com/login" "Mozilla/5.0"
+192.168.1.7 - - [10/Oct/2025:13:55:38 +0000] "GET /old-page HTTP/1.1" 301 0 "-" "curl/7.68.0"
+10.0.0.2 - - [10/Oct/2025:13:55:40 +0000] "GET /images/logo.png HTTP/1.1" 200 45210 "https://example.com/" "Mozilla/5.0"
+10.0.0.5 - - [10/Oct/2025:13:55:42 +0000] "GET /not-found.html HTTP/1.1" 404 153 "-" "Mozilla/5.0"
+192.168.1.8 - - [10/Oct/2025:13:56:01 +0000] "POST /api/checkout HTTP/1.1" 500 245 "https://example.com/cart" "Mozilla/5.0"
+MALFORMED LINE 1: This is total garbage from an interrupted connection
+192.168.1.9 - - [10/Oct/2025:13:56:05 +0000] "GET /api/products HTTP/1.1" 200 8192 "https://example.com/" "Mozilla/5.0"
+10.0.0.2 - - [10/Oct/2025:13:56:10 +0000] "GET /api/inventory HTTP/1.1" 502 0 "-" "curl/7.68.0"
+172.16.0.12 - alice [10/Oct/2025:13:56:15 +0000] "DELETE /api/items/42 HTTP/1.1" 200 120 "https://example.com/items" "PostmanRuntime/7.29.0"
+192.168.1.5 - - [10/Oct/2025:13:56:20 +0000] "GET /index.html HTTP/1.1" 200 1024 "-" "Mozilla/5.0"
+BROKEN LINE 2: [10/Oct/2025:13:56:22 +0000] Missing IP and user info
+10.0.0.2 - - [10/Oct/2025:13:56:30 +0000] "POST /api/upload HTTP/1.1" 500 412 "-" "Mozilla/5.0"
+192.168.1.15 - - [10/Oct/2025:13:56:35 +0000] "GET /admin HTTP/1.1" 404 153 "-" "Mozilla/5.0"
+192.168.1.5 - - [10/Oct/2025:13:56:40 +0000] "GET /favicon.ico HTTP/1.1" 200 320 "https://example.com/" "Mozilla/5.0"
+10.0.0.9 - - [10/Oct/2025:13:56:45 +0000] "GET /api/status HTTP/1.1" 200 64 "-" "Datadog Agent"
+192.168.1.20 - - [10/Oct/2025:13:56:50 +0000] "PUT /api/settings HTTP/1.1" 502 128 "https://example.com/settings" "Mozilla/5.0"
+CORRUPTED LINE 3: 192.168.1.99 - - "BAD_REQUEST_NO_TIMESTAMP" 400
+10.0.0.2 - - [10/Oct/2025:13:56:55 +0000] "GET /api/inventory HTTP/1.1" 200 8192 "-" "Mozilla/5.0"
+192.168.1.5 - - [10/Oct/2025:13:57:00 +0000] "GET /contact HTTP/1.1" 200 2048 "https://example.com/" "Mozilla/5.0"

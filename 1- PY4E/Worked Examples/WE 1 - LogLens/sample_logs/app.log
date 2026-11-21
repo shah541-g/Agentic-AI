@@ -1,0 +1,15 @@
+2025-10-10 13:55:30 INFO Server starting up on port 8080
+2025-10-10 13:55:31 DEBUG Loading configuration from config.yaml
+2025-10-10 13:55:32 INFO Database connection pool initialized with 10 connections
+2025-10-10 13:55:36 ERROR Database connection timed out
+2025-10-10 13:55:40 WARN Cache miss rate exceeded threshold: 24.5%
+2025-10-10 13:56:01 INFO User authentication succeeded for user_id=1042
+2025-10-10 13:56:15 DEBUG Executing query SELECT * FROM orders WHERE status = 'pending'
+2025-10-10 13:56:20 WARNING Disk usage above 85% on partition /data
+2025-10-10 13:56:35 ERROR Payment gateway returned status code 503
+2025-10-10 13:56:50 CRITICAL Out of memory during large payload processing
+2025-10-10 13:57:05 INFO Health check endpoint /healthz returned 200 OK
+2025-10-10 13:57:20 DEBUG Refreshing OAuth tokens for external service
+2025-10-10 13:57:35 ERROR Failed to dispatch webhook to endpoint https://webhook.site/notify
+2025-10-10 13:57:50 INFO Graceful restart initiated by signal SIGUSR1
+2025-10-10 13:58:05 FATAL Unhandled exception in worker thread 4, shutting down

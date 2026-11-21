@@ -1,0 +1,50 @@
+[
+  {
+    "ip": "192.168.1.8",
+    "user": "-",
+    "time": "10/Oct/2025:13:56:01 +0000",
+    "method": "POST",
+    "path": "/api/checkout",
+    "protocol": "HTTP/1.1",
+    "status": "500",
+    "size": "245",
+    "referrer": "https://example.com/cart",
+    "user_agent": "Mozilla/5.0"
+  },
+  {
+    "ip": "10.0.0.2",
+    "user": "-",
+    "time": "10/Oct/2025:13:56:10 +0000",
+    "method": "GET",
+    "path": "/api/inventory",
+    "protocol": "HTTP/1.1",
+    "status": "502",
+    "size": "0",
+    "referrer": "-",
+    "user_agent": "curl/7.68.0"
+  },
+  {
+    "ip": "10.0.0.2",
+    "user": "-",
+    "time": "10/Oct/2025:13:56:30 +0000",
+    "method": "POST",
+    "path": "/api/upload",
+    "protocol": "HTTP/1.1",
+    "status": "500",
+    "size": "412",
+    "referrer": "-",
+    "user_agent": "Mozilla/5.0"
+  },
+  {
+    "ip": "192.168.1.20",
+    "user": "-",
+    "time": "10/Oct/2025:13:56:50 +0000",
+    "method": "PUT",
+    "path": "/api/settings",
+    "protocol": "HTTP/1.1",
+    "status": "502",
+    "size": "128",
+    "referrer": "https://example.com/settings",
+    "user_agent": "Mozilla/5.0"
+  }
+]

@@ -1,0 +1,15 @@
+Oct 10 13:55:36 myhost sshd[1234]: Failed password for root from 10.0.0.9 port 22 ssh2
+Oct 10 13:55:38 myhost sshd[1234]: Failed password for root from 10.0.0.9 port 22 ssh2
+Oct 10 13:55:40 myhost sshd[1234]: Accepted publickey for ubuntu from 192.168.1.100 port 54321 ssh2
+Oct 10 13:55:45 myhost systemd[1]: Starting Daily apt upgrade and clean activities...
+Oct 10 13:55:50 myhost cron[567]: (root) CMD (/usr/local/bin/backup.sh > /dev/null 2>&1)
+Oct 10 13:56:01 myhost kernel: [ 1234.567890] [UFW BLOCK] IN=eth0 OUT= MAC=00:11:22:33:44:55 SRC=198.51.100.2 DST=192.168.1.10
+Oct 10 13:56:15 myhost sudo: pam_unix(sudo:session): session opened for user root by ubuntu(uid=1000)
+Oct 10 13:56:20 myhost dockerd[890]: time="2025-10-10T13:56:20Z" level=info msg="Container started id=abc1234"
+Oct 10 13:56:30 myhost sshd[1450]: Connection closed by authenticating user admin 10.0.0.15 port 43210 [preauth]
+Oct 10 13:56:45 myhost systemd[1]: apt-daily-upgrade.service: Deactivated successfully.
+Oct 10 13:57:00 myhost systemd[1]: Started Daily apt upgrade and clean activities.
+Oct 10 13:57:15 myhost nginx[2100]: 2025/10/10 13:57:15 [error] 2100#2100: *45 connect() failed
+Oct 10 13:57:30 myhost postfix/cleanup[3201]: 4Sdf0123: message-id=<test@example.com>
+Oct 10 13:57:45 myhost kernel: [ 1345.123456] TCP: request_sock_TCP: Possible SYN flooding on port 80.
+Oct 10 13:58:00 myhost cron[567]: (system) CMD (/usr/lib/sysstat/debian-sa1 1 1)

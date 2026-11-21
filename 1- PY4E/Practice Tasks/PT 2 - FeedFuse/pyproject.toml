@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "feedfuse"
+version = "0.1.0"
+description = "A small Python command-line tool that fetches many JSON APIs concurrently, extracts and renames fields, merges results, and isolates failures."
+readme = "README.md"
+authors = [{ name = "FeedFuse Contributors" }]
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+    "httpx>=0.24.0",
+    "pyyaml>=6.0",
+    "rich>=13.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "respx>=0.21.0",
+]
+
+[project.scripts]
+feedfuse = "feedfuse.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["feedfuse*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

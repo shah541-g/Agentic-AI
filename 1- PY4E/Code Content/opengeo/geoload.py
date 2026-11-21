@@ -35,7 +35,10 @@ for line in fh:
     print('')
     cur.execute("SELECT geodata FROM Locations WHERE address= ?",
         (memoryview(address.encode()), ))
-
+# memoryview kya ha?
+# .encode q use hoa ha?
+# fetchone() k aagay [0] kis liye use hoa ha?
+# data[:20].replace('\n', ' ') kya ha?
     try:
         data = cur.fetchone()[0]
         print("Found in database", address)
