@@ -1,27 +1,123 @@
+# ==============================================================================
+# SECRETS, CREDENTIALS & ENVIRONMENT VARIABLES (NEVER PUSH TO GITHUB)
+# ==============================================================================
 .env
-*.db
-*.sqlite
-*.sqlite3
-media/
-logs/
+.env.*
+*.env
+!.env.example
+*.token
+*.tokens
 token.json
 tokens.json
-linkedin_token.json
 credentials.json
+linkedin_token.json
+secrets.json
+*.pem
+*.key
+*.cert
+*.pfx
 *.ngrok
-*.token
+id_rsa*
+id_ed25519*
+
+# ==============================================================================
+# DATABASES & LOCAL STATE (PREVENTS ACCIDENTAL DATA OVERWRITES & LEAKS)
+# ==============================================================================
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+agent_system.db
+agent_pool.db
+memory.db
+opengeo.sqlite
+spider.sqlite
+
+# ==============================================================================
+# PYTHON BYTECODE, COMPILER & CACHE ARTIFACTS
+# ==============================================================================
 __pycache__/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.venv/
-venv/
+*.py[cod]
+*$py.class
+*.so
+*.pyc
+
+# ==============================================================================
+# PYTHON PACKAGING, DISTRIBUTION & BUILDS
+# ==============================================================================
 dist/
 build/
 *.egg-info/
-output
-outputs
-data
-__pycache__
-Projects
-PY4E/Code Content
+*.egg
+.eggs/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+
+# ==============================================================================
+# VIRTUAL ENVIRONMENTS
+# ==============================================================================
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+bin/
+include/
+lib/
+lib64/
+
+# ==============================================================================
+# TESTING, LINTING & COVERAGE
+# ==============================================================================
+.pytest_cache/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+htmlcov/
+.tox/
+.nox/
+
+# ==============================================================================
+# RUNTIME LOGS & RUNTIME ARTIFACTS (PRESERVES SAMPLE FIXTURES)
+# ==============================================================================
+logs/
+*.log
+!**/sample_logs/*.log
+output.txt
+output/
+outputs/
+*.tmp
+*.temp
+media/
+
+# ==============================================================================
+# IDE, EDITOR & OS-SPECIFIC SYSTEM ARTIFACTS
+# ==============================================================================
+.vscode/
+.idea/
+.cursor/
+.windsurf/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+[Dd]esktop.ini
+$RECYCLE.BIN/
